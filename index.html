@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/millennium-black.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Millennium Cooperative Society</title>
+
+    <!-- Open Graph Meta Properties -->
+    <meta property="og:title" content="Millennium Cooperative Society" />
+
+    <meta property="description" content="Empowering communities through cooperation and collaboration." /> 
+    <meta property="og:description" content="Empowering communities through cooperation and collaboration." />
+
+    <meta property="og:image" content="/src/img/millennium-black.svg" />
+
+    <meta property="og:type" content="website" />
+  </head>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const html = document.querySelector('html');
+        const darkMode = localStorage.getItem("darkMode") === "true";
+        if (darkMode) {
+            html.classList.add("dark");
+        } else {
+            html.classList.remove("dark");
+        }
+    });
+  </script>
+  <body class="dark:bg-[#1A1A1A] bg-[#E8F5E9] text-[#333333] dark:text-[#cccccc]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+import React from 'react'
+import AboutUs from '../components/AboutUs'
+import Testimonials from '../components/Testimonials'
+import { motion } from 'framer-motion'
+
+
+export default function AboutUsPage() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      <AboutUs />
+      <Testimonials />
+    </motion.div>
+  )
+}
+// Utilizes the Header, AboutUs, Testimonials, and Footer components.

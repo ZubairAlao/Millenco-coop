@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    /* @apply dark:bg-[#1A1A1A] bg-[#E8F5E9] text-[#333333] dark:text-[#cccccc]; */
+  }
+
+  h1, h2, h3, .logo-text {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  a.active {
+    @apply text-[#388E3C] dark:text-[#FF6F00] transition duration-300 ease-in-out font-semibold
+  }
+
+  label {
+    @apply block;
+  }
+
+  input, textarea, select {
+    @apply bg-[#C8E6C9] dark:bg-[#37474F] w-full rounded border border-[#388E3C] dark:border-[#ff6f00] focus:border-[#333333] dark:focus:border-[#cccccc] outline-none p-1.5 mt-1 shadow-sm sm:leading-6;
+}
+
+  input[type="checkbox"] {
+    @apply shadow-none p-2 w-10 accent-[#388E3C] dark:accent-[#ff6f00] font-medium;
+  }
+}
+
