@@ -59,14 +59,11 @@ export default function UserDashboardPage() {
           <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Loan Payment:</span>₦ {data.loanPayment}</p>
         </div>
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
-          <UserTransactions />
+          <h3 className='font-semibold text-xl'>Transactions</h3>
+          <UserTransactions historyData = {data.paymentHistory}/>
         </div>
       </div>
      
     </div>
   )
 }
-
-//     May include additional components for displaying account information and transaction history.
-// Displays a personalized dashboard for the logged-in user.
-//     Shows user-specific information like account balance, recent transactions,

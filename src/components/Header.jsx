@@ -186,10 +186,12 @@ export default function Header() {
                   )}
                 </li>
               ))}
-              <ul className='flex items-center divide-x-2'>
-                <li className='pr-4' onClick={toggleMenu}><NavLink className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#ff6f00] transition duration-300 font-semibold" : 'hover:text-[#2E7D32] dark:hover:text-[#ff6f00] duration-300 ease-in-out'} to='/sign-up'>Sign Up</NavLink></li>
-                <li className='pl-4' onClick={toggleMenu}><NavLink className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#ff6f00] transition duration-300 font-semibold" : 'hover:text-[#2E7D32] dark:hover:text-[#ff6f00] duration-300 ease-in-out'} to='/login'>Login</NavLink></li>
-              </ul>
+              {isAuthenticated ? null :
+                <ul className='flex items-center divide-x-2'>
+                  <li className='pr-4' onClick={toggleMenu}><NavLink className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#ff6f00] transition duration-300 font-semibold" : 'hover:text-[#2E7D32] dark:hover:text-[#ff6f00] duration-300 ease-in-out'} to='/sign-up'>Sign Up</NavLink></li>
+                  <li className='pl-4' onClick={toggleMenu}><NavLink className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#ff6f00] transition duration-300 font-semibold" : 'hover:text-[#2E7D32] dark:hover:text-[#ff6f00] duration-300 ease-in-out'} to='/login'>Login</NavLink></li>
+                </ul>
+              }
             </ul>
           </nav>
 

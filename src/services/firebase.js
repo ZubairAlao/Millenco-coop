@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {getFirestore, doc, getDoc, collection, setDoc, updateDoc} from "firebase/firestore"
+import {getFirestore, doc, getDoc, collection, setDoc, addDoc, updateDoc, arrayUnion} from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: "AIzaSyAbVzUXRgMYXSJHrLjbMA-S9H49OMPlXLc",
@@ -77,6 +77,22 @@ export const uploadImageToFirebase = async (file) => {
     return downloadURL;
   } catch (error) {
     console.error('Error uploading image to Firebase:', error);
+    throw error;
+  }
+};
+
+export const addPaymentToFirestore = async (userId, payment) => {
+  try {
+    // Reference to the 'payments' collection
+    const docRef =  doc(db, 'users', userId)
+
+    await updateDoc(docRef, {
+      paymentHistory: arrayUnion(payment)
+    });
+
+    console.log('Payment added to Firestore');
+  } catch (error) {
+    console.error('Error adding payment to Firestore: ', error);
     throw error;
   }
 };

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { auth } from '../services/firebase'
 import { getProfileData } from '../services/firebase'
+import { Link } from 'react-router-dom'
 
 
 export default function DepositPage() {
@@ -13,20 +14,7 @@ export default function DepositPage() {
     queryFn: async () => {
       const userId = auth.currentUser.uid;
       const profileData = await getProfileData(userId);
-      let depositAmount = 0;
-      
-      if (profileData.plan === 'basic') {
-        depositAmount = 30000;
-      } else if (profileData.plan === 'business') {
-        depositAmount = 60000;
-      } else {
-        depositAmount = 120000;
-      }
-
-      return {
-        ...profileData,
-        depositAmount: depositAmount,
-      };
+      return profileData
     }
   })
 
@@ -43,6 +31,20 @@ export default function DepositPage() {
   }
 
   const [tab, setTab] = useState('deposit');
+  const paymentDataObject = {
+    userName: data.userName,
+    email: data.email,
+    initialAmount: data.accountBalance,
+    depositAmount: {
+      basic: 30000,
+      business: 60000,
+      premium: 100000,
+    }[data.plan],
+    paymentType: "deposit",
+    plan: data.plan
+  };
+  
+  console.log(paymentDataObject);
   return (
     <motion.div className='flex flex-1 flex-col justify-center sm:mx-auto sm:w-full sm:max-w-sm'
       initial={{ opacity: 0 }}
@@ -77,16 +79,27 @@ export default function DepositPage() {
                   </span>
                 </label>
                 <select id='deposit' name="deposit" required autoComplete="deposit">
-                  <option disabled value="" selected>Based on Seleted Plan</option>
-                  <option value={data.depositAmount}>₦{data.depositAmount}</option>
+                  <option disabled value="">Based on Seleted Plan</option>
+                  {data.plan === 'basic' && (
+                    <option value={30000}>₦30, 000</option>
+                  )}
+                  {data.plan === 'business' && (
+                    <option value={60000}>₦60, 000</option>
+                  )}
+                  {data.plan === 'premium' && (
+                    <option value={100000}>₦100,000</option>
+                  )}
                 </select>
               </div>
             </fieldset>
     
             <div className='flex justify-center'>
-              <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
-                Submit Deposit
-              </button>
+              <Link to='/payment' state={paymentDataObject}
+              >
+                <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
+                  Submit Deposit
+                </button>
+              </Link>
             </div>
           </form>
 
