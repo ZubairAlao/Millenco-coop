@@ -11,7 +11,6 @@ import { auth } from '../services/firebase';
 
 export default function LandingPage() {
   const heading = "Empowerment".split(" ");
-  const userId = auth.currentUser.uid;
 
   const text = "Discover the power of financial collaboration. Contribute, borrow, and grow together in our supportive society cooperative.";
 
@@ -35,8 +34,8 @@ export default function LandingPage() {
             </motion.span>
           </h1>
           <p className="text-base md:text-lg">{text}</p>
-          <Link to={userId ? '/user-dashboard' : `/sign-up`}>
-            <button className="mt-6 border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">Get Started</button>
+          <Link to={auth.currentUser ? '/user-dashboard' : `/sign-up`}>
+            <button className="mt-6 border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">{auth.currentUser ? 'Dashboard' : `Get Started`}</button>
           </Link>
         </motion.div>
 

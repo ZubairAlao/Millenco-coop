@@ -33,12 +33,10 @@ export default function Header() {
   };
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [photoURL, setPhotoURL] = useState(auth.currentUser.photoURL);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             setIsAuthenticated(!!user); // Convert user to boolean
-            setPhotoURL(user.photoURL);
         });
 
         return () => unsubscribe(); // Unsubscribe when component unmounts
