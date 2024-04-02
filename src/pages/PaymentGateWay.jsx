@@ -20,7 +20,8 @@ export default function PaymentGateWay() {
     email: state.email,
     plan: state.plan,
     paymentDate: new Date().toISOString(),
-    paymentAmount: state.initialAmount + state.depositAmount,
+    newAccountBalance: state.initialAmount + state.depositAmount,
+    paymentAmount: state.depositAmount,
     cardNumber: '',
     cardExpiry: '',
     cardCvc: ''
@@ -44,9 +45,9 @@ const handleChange = (e) => {
         throw new Error('Invalid card details');
       }
       if (state.paymentType === 'deposit') {
-        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.paymentAmount });
+        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
         // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-        const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
+        const { cardCvc, cardNumber, cardExpiry, newAccountBalance, ...paymentWithoutSensitiveData } = paymentData;
         await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
       }
       navigate('/payment-success');
@@ -106,28 +107,28 @@ const handleChange = (e) => {
               {/* Card Number */}
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="card-nr">Card Number <span className="text-red-500">*</span></label>
-                <input id="card-nr" name='cardNumber' className="text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" placeholder="use - 1234123412341234" onChange={handleChange} />
+                <input id="card-nr" name='cardNumber' className="payment text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" placeholder="use - 1234123412341234" onChange={handleChange} />
               </div>
               {/* Expiry and CVC */}
               <div className="flex space-x-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1" htmlFor="card-expiry">Expiry Date <span className="text-red-500">*</span></label>
-                  <input id="card-expiry" name='cardExpiry' className="text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" placeholder="MM/YY - use 12/23" onChange={handleChange} />
+                  <input id="card-expiry" name='cardExpiry' className="payment text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" placeholder="MM/YY - use 12/23" onChange={handleChange} />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1" htmlFor="card-cvc">CVC <span className="text-red-500">*</span></label>
-                  <input name='cardCvc' id="card-cvc" className="text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="number" placeholder="123" onChange={handleChange} />
+                  <input name='cardCvc' id="card-cvc" className="payment text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="number" placeholder="123" onChange={handleChange} />
                 </div>
               </div>
               {/* Name on Card */}
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="card-name">Name on Card <span className="text-red-500">*</span></label>
-                <input id="card-name" name='userName' className="text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" value={state.userName} disabled onChange={handleChange} />
+                <input id="card-name" name='userName' className="payment text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="text" value={state.userName} disabled onChange={handleChange} />
               </div>
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="card-email">Email <span className="text-red-500">*</span></label>
-                <input id="card-email" name="email" className="text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="email" value={state.email} disabled onChange={handleChange}/>
+                <input id="card-email" name="email" className="payment text-sm text-gray-800 bg-white border rounded leading-5 py-2 px-3 border-gray-200 hover:border-gray-300 focus:border-indigo-300 shadow-sm placeholder-gray-400 focus:ring-0 w-full" type="email" value={state.email} disabled onChange={handleChange}/>
               </div>
             </div>
             {/* Form footer */}

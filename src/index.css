@@ -29,5 +29,9 @@
   input[type="checkbox"] {
     @apply shadow-none p-2 w-10 accent-[#388E3C] dark:accent-[#ff6f00] font-medium;
   }
+
+  .payment {
+    @apply bg-white !important;
+  }
 }
 

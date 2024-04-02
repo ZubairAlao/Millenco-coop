@@ -60,7 +60,7 @@ export default function UserDashboardPage() {
         </div>
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
           <h3 className='font-semibold text-xl'>Transactions</h3>
-          <UserTransactions historyData = {data.paymentHistory}/>
+          <UserTransactions/>
         </div>
       </div>
      
