@@ -19,12 +19,14 @@ export default function PaymentGateWay() {
     userName: state.userName,
     email: state.email,
     plan: state.plan,
+    paymentType: state.paymentType,
     paymentDate: new Date().toISOString(),
     newAccountBalance: state.initialAmount + state.depositAmount,
     paymentAmount: state.depositAmount,
     cardNumber: '',
     cardExpiry: '',
-    cardCvc: ''
+    cardCvc: '',
+    paymentId: state.paymentId 
   });
 
 const handleChange = (e) => {
@@ -47,7 +49,7 @@ const handleChange = (e) => {
       if (state.paymentType === 'deposit') {
         await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
         // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-        const { cardCvc, cardNumber, cardExpiry, newAccountBalance, ...paymentWithoutSensitiveData } = paymentData;
+        const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
         await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
       }
       navigate('/payment-success');

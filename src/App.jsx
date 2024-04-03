@@ -25,6 +25,7 @@ import UserDashboardLayout from "./components/UserDashboardLayout"
 import UserTransactions from "./pages/user/UserTransactions"
 import PaymentGateWay from "./pages/PaymentGateWay"
 import { PaymentSuccessPage } from "./pages/PaymentSuccessPage"
+import UserTransactionsDetails from "./pages/user/UserTransactionsDetails"
 
 
 
@@ -112,11 +113,18 @@ const router = createBrowserRouter(createRoutesFromElements(
       errorElement={<Error />}
     />
 
-    <Route  
-      path="user-transactions"
-      element={<UserTransactions />}
+      <Route  
+        path="user-transactions"
+        element={<UserTransactions />}
+        errorElement={<Error />}
+      />
+
+    <Route
+      path="user-transactions/:paymentId"
+      element={<UserTransactionsDetails />}
       errorElement={<Error />}
     />
+
   </Route>
 
     <Route path="*"  element={<NotFound />} />

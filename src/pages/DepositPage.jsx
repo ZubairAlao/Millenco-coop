@@ -41,10 +41,11 @@ export default function DepositPage() {
       premium: 100000,
     }[data.plan],
     paymentType: "deposit",
+    paymentId: (data.paymentHistory ? data.paymentHistory.length : 0) + 1,
     plan: data.plan
   };
   
-  console.log(paymentDataObject);
+  console.log(data.paymentHistory.length);
   return (
     <motion.div className='flex flex-1 flex-col justify-center sm:mx-auto sm:w-full sm:max-w-sm'
       initial={{ opacity: 0 }}

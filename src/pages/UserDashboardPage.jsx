@@ -2,7 +2,7 @@ import React from 'react'
 import { getProfileData } from "../services/firebase";
 import { auth } from '../services/firebase';
 import { useQuery } from '@tanstack/react-query'
-import UserTransactions from './user/UserTransactions';
+import { Link } from 'react-router-dom';
 
 export default function UserDashboardPage() {
 
@@ -60,7 +60,21 @@ export default function UserDashboardPage() {
         </div>
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
           <h3 className='font-semibold text-xl'>Transactions</h3>
-          <UserTransactions/>
+          {data.paymentHistory ? (
+            data.paymentHistory.length > 0 ? (
+              data.paymentHistory.slice().reverse().map((transaction, index) => (
+                <Link key={index} className='flex py-4'>
+                  <p>Transaction Successful</p>
+                  <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()}</div>
+                  <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
+                </Link>
+              ))
+            ) : (
+              <p>No records</p>
+            )
+          ) : (
+            <p>No records</p>
+          )}
         </div>
       </div>
      

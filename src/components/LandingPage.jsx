@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import landingPageEmpowerBig1 from '../img/landingpage-empower1.jpg'
 import landingPageEmpowerAgric2 from '../img/landingpage-empower2.jpg'
 import landingPageEmpowerOffice3 from '../img/landingpage-empower3.jpg'
@@ -9,8 +9,19 @@ import { Link } from 'react-router-dom';
 import { auth } from '../services/firebase';
 
 
+
 export default function LandingPage() {
   const heading = "Empowerment".split(" ");
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(user => {
+          setIsAuthenticated(!!user); // Convert user to boolean
+      });
+
+      return () => unsubscribe(); // Unsubscribe when component unmounts
+  }, []);
 
   const text = "Discover the power of financial collaboration. Contribute, borrow, and grow together in our supportive society cooperative.";
 
@@ -34,7 +45,7 @@ export default function LandingPage() {
             </motion.span>
           </h1>
           <p className="text-base md:text-lg">{text}</p>
-          <Link to={auth.currentUser ? '/user-dashboard' : `/sign-up`}>
+          <Link to={isAuthenticated ? '/user-dashboard' : `/sign-up`}>
             <button className="mt-6 border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">{auth.currentUser ? 'Dashboard' : `Get Started`}</button>
           </Link>
         </motion.div>
@@ -51,18 +62,3 @@ export default function LandingPage() {
     </section>
   );
 }
-
-
-{/* <div className='relative rounded-xl max-w-[300px] min-h-[400px] ml-auto' style={{ backgroundImage: `url(${landingPageEmpowerBig1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center center', }}>
-            <div className="absolute -right-12 -bottom-16 w-[60%] h-[50%]">
-              <img src={landingPageEmpowerOffice3} alt="landingPageEmpower2" className='w-full rounded-md' />
-            </div>
-
-            <div className="absolute -right-16 top-20 w-[50%]">
-              <img src={landingPageEmpowerAgric4} alt="landingPageEmpower2" className='ounded-md' />
-            </div>
-
-            <div className="absolute -left-20 top-[45%] w-[70%] h-[65%]">
-              <img src={landingPageEmpowerAgric2} alt="landingPageEmpower2" className='w-full rounded-md' />
-            </div>
-          </div> */}
