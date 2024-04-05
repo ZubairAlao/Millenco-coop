@@ -127,7 +127,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       />
 
     <Route
-      path="user-transactions/:index"
+      path="user-transactions/:type/:id"
       element={<UserTransactionsDetails />}
       errorElement={<Error />}
     />

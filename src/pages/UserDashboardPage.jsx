@@ -63,27 +63,27 @@ export default function UserDashboardPage() {
         <div className='grid grid-cols-1 gap-3'>
           <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Plan:</span> {data.plan}</p>
           <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Balance:</span>₦ {data.accountBalance}</p>
-          <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Loan Payment:</span>₦ {data.loanPayment}</p>
+          <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Loan Payment:</span>₦ {data.loanPayment} {data.loanRepayPerMonth && <span className="font-bold block">Per Month ₦ {data.loanRepayPerMonth}</span>}</p>
         </div>
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
           <h3 className='font-semibold text-xl'>Transactions</h3>
-          {data.paymentHistory ? (
-            data.paymentHistory.length > 0 ? (
-              data.paymentHistory.slice().reverse().map((transaction, index) => (
-                <div className='overflow-auto max-h-[300px]'>
-                  <Link to={`user-transactions/${index}`} key={index} className='flex gap-3 py-4'>
-                    <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                    <div>Type: {transaction.paymentType}</div>
-                    <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
-                  </Link>
-                </div>
-              ))
+          <div className='overflow-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
+            {data.paymentHistory ? (
+              data.paymentHistory.length > 0 ? (
+                data.paymentHistory.slice().reverse().map((transaction, index) => (
+                    <Link to={`user-transactions/payment/${data.paymentHistory.length - index - 1}`} key={index} className='flex gap-3 py-4'>
+                      <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+                      <div>Type: {transaction.paymentType}</div>
+                      <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
+                    </Link>
+                ))
+              ) : (
+                <p>No records</p>
+              )
             ) : (
               <p>No records</p>
-            )
-          ) : (
-            <p>No records</p>
-          )}
+            )}
+          </div>
         </div>
       </div>
      

@@ -8,20 +8,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function UserTransactionsDetails() {
-  let { index } = useParams();
+  const { type, id } = useParams();
 
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ['profileData', index],
+    queryKey: ['profileData', id],
     queryFn: async () => {
       const userId = auth.currentUser.uid;
       const profileData = await getProfileData(userId);
-      const filteredData = profileData.paymentHistory[index];
-      return {filteredData, profileData};
+      const filteredPaymentData = profileData. paymentHistory[id];
+      const filteredLoanData = profileData.loanHistory[id];
+      return {filteredPaymentData, filteredLoanData, profileData};
     }
   });
 
   console.log(data);
-  console.log(index);
+  const isPayment = type === 'payment';
+  const isLoan = type === 'loan';
 
   if (isPending) {
     return (
@@ -43,15 +45,32 @@ export default function UserTransactionsDetails() {
       </Link>
       <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm bg-[#C8E6C9] dark:bg-[#37474F] text-[#333333] dark:text-[#cccccc]'>
         <h3 className='font-semibold py-2'>Transaction Details</h3>
-        <p>Millenco Coop</p>
-        <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-        <p>Receipt ID {parseInt(index) + 1}</p>
-        <p><strong>Payment Type:</strong> {data.filteredData.paymentType}</p>
-        <p><strong>User Name:</strong> {data.filteredData.userName}</p>
-        <p><strong>Email:</strong> {data.filteredData.email}</p>
-        <p><strong>Payment Date:</strong> {new Date(data.filteredData.paymentDate).toLocaleDateString()} {new Date(data.filteredData.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
-        <p><strong>Payment Amount:</strong> {data.filteredData.paymentAmount}</p>
-        <p><strong>New Account Balance:</strong> {data.filteredData.newAccountBalance}</p>
+        {isPayment && 
+          <div>
+            <p>Millenco Coop</p>
+            <p>No 13, Lagos Street,Ikeja, Lagos State</p>
+            <p>Receipt ID {parseInt(id) + 1}</p>
+            <p><strong>Payment Type:</strong> {data.filteredPaymentData.paymentType}</p>
+            <p><strong>User Name:</strong> {data.filteredPaymentData.userName}</p>
+            <p><strong>Email:</strong> {data.filteredPaymentData.email}</p>
+            <p><strong>Payment Date:</strong> {new Date(data.filteredPaymentData.paymentDate).toLocaleDateString()} {new Date(data.filteredPaymentData.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
+            <p><strong>Payment Amount:</strong> {data.filteredPaymentData.paymentAmount}</p>
+            <p><strong>New Account Balance:</strong> {data.filteredPaymentData.newAccountBalance}</p>
+          </div>
+        }
+        {isLoan && 
+          <div>
+            <p>Millenco Coop</p>
+            <p>No 13, Lagos Street,Ikeja, Lagos State</p>
+            <p>Receipt ID {parseInt(id) + 1}</p>
+            <p><strong>Payment Type:</strong> {data.filteredLoanData.paymentType}</p>
+            <p><strong>User Name:</strong> {data.filteredLoanData.userName}</p>
+            <p><strong>Email:</strong> {data.filteredLoanData.email}</p>
+            <p><strong>Loan Date:</strong> {new Date(data.filteredLoanData.loanDate).toLocaleDateString()} [{new Date(data.filteredLoanData.loanDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
+            <p><strong>Loan Repay per Month:</strong> {data.filteredLoanData.loanRepayPerMonth}</p>
+            <p><strong>Loan Request Granted:</strong> {data.filteredLoanData.loanValue}</p>
+          </div>
+        }
       </div>
     </div>
   );

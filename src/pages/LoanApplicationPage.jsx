@@ -79,6 +79,11 @@ export default function LoanApplicationPage() {
     setIsLoading(true);
     try {
       setLoanApplicationError(null);
+      if (loanDataObject.accountBalance === 0) {
+        setLoanApplicationError("Deposit first to access loan");
+        setIsLoading(false);
+        return;
+      }
       await updateProfileData(auth.currentUser.uid, {loanPayment: loanDataObject.loanRepayPerMonth * 6});
       await updateProfileData(auth.currentUser.uid, {loanRepayPerMonth: loanDataObject.loanRepayPerMonth});
       const { maxLoanAmount, accountBalance, ...loanApplicationData } = loanDataObject;
@@ -142,8 +147,8 @@ export default function LoanApplicationPage() {
                                       Enter Amount
                                   </span>
                               </label>
-                              <input type="number" name="loan-amount" id="loan-amount" min="1" max={loanDataObject.maxLoanAmount} onChange={(e) => setLoanValue(e.target.value)} required />
-                              <input type="range" className='w-full' min="1" max={loanDataObject.maxLoanAmount} defaultValue={loanValue} />
+                              <input type="number" name="loan-amount" id="loan-amount" min="0" max={loanDataObject.maxLoanAmount} onChange={(e) => setLoanValue(e.target.value)} required />
+                              <input type="range" className='w-full' min="0" max={loanDataObject.maxLoanAmount} defaultValue={loanValue} />
                           </div>
                       </fieldset>
 

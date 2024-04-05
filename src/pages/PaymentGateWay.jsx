@@ -46,12 +46,10 @@ const handleChange = (e) => {
       if (paymentData.cardCvc !== '123' || paymentData.cardNumber !== '1234123412341234' || paymentData.cardExpiry !== '12/23') {
         throw new Error('Invalid card details');
       }
-      if (state.paymentType === 'deposit') {
-        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
-        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-        const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
-        await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
-      }
+      await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
+      // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+      const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
+      await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
       navigate('/payment-success');
     } catch (error) {
       console.error('Error updating user payment', error);
@@ -67,12 +65,10 @@ const handleChange = (e) => {
     setIsLoading(true);
     try {
       setPaymentError(null);
-      if (state.paymentType === 'deposit') {
-        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
-        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-        const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
-        await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
-      }
+      await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
+      // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+      const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
+      await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
       navigate('/payment-success');
     } catch (error) {
       console.error('Error updating user payment', error);

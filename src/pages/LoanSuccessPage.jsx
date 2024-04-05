@@ -12,7 +12,7 @@ export const LoanSuccessPage = () => {
     queryFn: async () => {
       const userId = auth.currentUser.uid;
       const profileData = await getProfileData(userId);
-      return profileData.paymentHistory[profileData.paymentHistory.length - 1];
+      return profileData.loanHistory[profileData.loanHistory.length - 1];
     }
   })
 
@@ -30,7 +30,7 @@ export const LoanSuccessPage = () => {
     return <span>Error: {error.message}</span>
   }
 
-  const paymentDateTime = new Date(data.paymentDate);
+  const paymentDateTime = new Date(data.loanDate);
   const paymentDate = paymentDateTime.toLocaleDateString();
   const paymentTime = paymentDateTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -41,6 +41,16 @@ export const LoanSuccessPage = () => {
         <div>
           <h1 className="text-xl leading-snug font-semibold mb-2">Loan Successful</h1>
         </div>
+        <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm  text-[#333333] dark:text-[#cccccc]'>
+          <p>Millenco Coop</p>
+          <p>No 13, Lagos Street,Ikeja, Lagos State</p>
+          <p><strong>Payment Type:</strong> {data.paymentType}</p>
+          <p><strong>User Name:</strong> {data.userName}</p>
+          <p><strong>Email:</strong> {data.email}</p>
+          <p><strong>Loan Date:</strong> {new Date(data.loanDate).toLocaleDateString()} [{paymentTime}]</p>
+          <p><strong>Loan Repay per Month:</strong> {data.loanRepayPerMonth}</p>
+          <p><strong>Loan Request Granted:</strong> {data.loanValue}</p>
+      </div>
 
         <Link to="/user-dashboard">Go to DashBoard</Link>
       </div>

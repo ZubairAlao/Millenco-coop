@@ -210,11 +210,11 @@ export default function Header() {
         <div className='flex items-center gap-4 text-base'>
           {isAuthenticated ?
             <div className='relative flex items-center gap-4'>
-              <button
+              <Link to='/user-dashboard/user-transactions'
                 className="text-black dark:text-white hover:opacity-80 flex place-content-center"
               >
                 <FontAwesomeIcon icon={faBell} className="h-7 w-7" />
-              </button>
+              </Link>
               <div className='h-8 w-8 rounded-full bg-slate-300 cursor-pointer' style={{backgroundImage: `url(${auth.currentUser.photoURL})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}} onClick={toggleProfile}></div>
               {isProfile && (
                 <div className="absolute top-[55px] right-0 bg-white dark:bg-gray-800 w-44 shadow-lg rounded-md">

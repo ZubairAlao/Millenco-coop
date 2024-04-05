@@ -39,7 +39,7 @@ export const PaymentSuccessPage = () => {
       <PrivateRoute />
       <div className='bg-[#C8E6C9] dark:bg-[#37474F] p-8'>
         <div>
-          <h1 className="text-xl leading-snug font-semibold mb-2">Payment Successful</h1>
+          <h1 className="text-xl leading-snug font-semibold mb-2">Loan Request Successful</h1>
         </div>
 
         <Link to="/user-dashboard">Go to DashBoard</Link>
