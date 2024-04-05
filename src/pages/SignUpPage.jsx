@@ -168,7 +168,7 @@ export default function SignUpPage() {
                             <option disabled value="" selected>Select Plan</option>
                             <option value="basic">Basic - #30, 000/Month</option>
                             <option value="business">Business - #60, 000/Month</option>
-                            <option value="premium">Premium - #120, 000/Month</option>
+                            <option value="premium">Premium - #100, 000/Month</option>
                         </select>
                     </div>
 

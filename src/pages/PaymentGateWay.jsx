@@ -6,6 +6,7 @@ import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { addPaymentToFirestore, updateProfileData } from '../services/firebase';
 import { auth } from '../services/firebase';
 
+
 export default function PaymentGateWay() {
 
   const { state } = useLocation();
@@ -26,7 +27,6 @@ export default function PaymentGateWay() {
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
-    paymentId: state.paymentId 
   });
 
 const handleChange = (e) => {
@@ -68,7 +68,7 @@ const handleChange = (e) => {
     try {
       setPaymentError(null);
       if (state.paymentType === 'deposit') {
-        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.paymentAmount });
+        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
         // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
         const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
         await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
@@ -85,7 +85,7 @@ const handleChange = (e) => {
   return (
     <section className="max-w-screen-sm h-full mx-auto pt-28 pb-12 px-8 my-auto">
       <PrivateRoute />
-      <Link to='..'>
+      <Link to='/user-dashboard/deposit'>
         <FontAwesomeIcon icon={faArrowAltCircleLeft} />
       </Link>
       <div className='bg-white p-8'>

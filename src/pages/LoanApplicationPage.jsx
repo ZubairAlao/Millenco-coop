@@ -1,11 +1,15 @@
 import { motion } from 'framer-motion'
-import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { auth } from '../services/firebase'
+import React, { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { addLoanToFirestore, auth, updateProfileData } from '../services/firebase'
 import { getProfileData } from '../services/firebase'
+import { useNavigate } from 'react-router-dom'
+
 
 
 export default function LoanApplicationPage() {
+
+  const navigate =  useNavigate();
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
@@ -16,7 +20,80 @@ export default function LoanApplicationPage() {
     }
   })
 
-  if (isPending) {
+  const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loanApplicationError, setLoanApplicationError] = useState(null);
+  const [loanValue, setLoanValue] = useState(data.accountBalance)
+  const queryClient = useQueryClient()
+  const makeUserOldMember = async (e) => {
+    e.preventDefault();
+    setIsOldMemberLoading(true);
+    try {
+      const currentTimestamp = Date.now();
+      // Generate a random number of milliseconds between 6 months and 2 years ago
+      const randomPastTimestamp = currentTimestamp - Math.floor(Math.random() * (365 * 24 * 60 * 60 * 1000 * 1.5)) - (180 * 24 * 60 * 60 * 1000);
+      const randomPastDate = new Date(randomPastTimestamp);
+  
+      // Assuming 'auth.currentUser.uid' and 'data.dateRegistered' are defined elsewhere
+      await updateProfileData(auth.currentUser.uid, { dateRegistered: randomPastDate });
+
+      await queryClient.invalidateQueries({ queryKey: ['profileData'] })
+  
+    } catch (error) {
+      console.error('Error updating user post 6 month membership', error);
+    }
+    finally {
+      setIsOldMemberLoading(false);
+    }
+  }
+
+  const currentDate = new Date();
+  const currentTimeMs = currentDate.getTime();
+  const registrationTimeMs = data.dateRegistered && new Date(data.dateRegistered.seconds * 1000)
+  const timeDifferenceMs = currentTimeMs - registrationTimeMs;
+  const monthsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 30));
+  console.log(monthsUsed);
+  
+  const loanDataObject = {
+    userName: data.userName,
+    email: data.email,
+    accountBalance: data.accountBalance,
+    maxLoanAmount: {
+        basic: 2,
+        business: 3,
+        premium: 3,
+    }[data.plan] * data.accountBalance,
+    paymentType: "loan-application",
+    plan: data.plan,
+    loanDate: new Date().toISOString(),
+    loanValue: loanValue,
+    loanRepayPerMonth: (loanValue * 6 * 3) / 100
+  };
+
+  console.log(loanDataObject);
+
+  
+
+  const loanApplication = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      setLoanApplicationError(null);
+      await updateProfileData(auth.currentUser.uid, {loanPayment: loanDataObject.loanRepayPerMonth * 6});
+      await updateProfileData(auth.currentUser.uid, {loanRepayPerMonth: loanDataObject.loanRepayPerMonth});
+      const { maxLoanAmount, accountBalance, ...loanApplicationData } = loanDataObject;
+      await addLoanToFirestore(auth.currentUser.uid, loanApplicationData);
+      navigate('/loan-success');
+    } catch (error) {
+      console.error('Error updating user payment', error);
+      setLoanApplicationError(error.message); // Update the payment error state
+    }
+    finally{
+      setIsLoading(false);
+    }
+  }
+
+   if (isPending) {
     return (
       <div className="flex justify-center items-center h-full">
         <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-900  dark:border-gray-100"></div>
@@ -27,6 +104,7 @@ export default function LoanApplicationPage() {
   if (isError) {
     return <span>Error: {error.message}</span>
   }
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -50 }}
@@ -37,29 +115,49 @@ export default function LoanApplicationPage() {
     >
       <div>
           <h2 className="text-center text-2xl font-bold leading-9 tracking-tight">Apply for Loan</h2>
-          <p className='text-center italic'>NOTE: Basic Plan loan is two times of total money in account. Business and Premium Plan is three times.</p>
+          <p className='text-center italic'>NOTE: Loans are 2x for Basic, 3x for Business/Premium plans. Membership must be 6 months old. Repay within 6 months.</p>
       </div>
-      <div className="mt-5 text-sm font-medium">
-        <form className='space-y-6'>
-          <fieldset className='space-y-2'>
-            <legend>Loan application</legend>
-            <div>
-              <label htmlFor="loan-amount">
-              <span className="after:content-['You are entitle to loan within 0 to ${profileData.loanAmount}'] after:ml-0.5 after:text-red-500">
-                Enter Amount
-              </span>
-              </label>
-              <input type="number" name="loan-amount" id="loan-amount" min='0'  required />
-            </div>
-          </fieldset>
-  
-          <div className='flex justify-center'>
-            <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
-              Apply For Loan
-            </button>
-          </div>
-        </form>
-      </div>
+      {data.dateRegistered && monthsUsed < 6 ? (
+        <div className='flex justify-center flex-col my-4'>
+            <p>You must be a member for at least 6 months to apply for a loan.</p>
+            <button className='border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>{isOldMemberLoading ? 'Loading...' : 'Make Old Member'}</button>
+        </div>
+      ) : (
+          data.loanPayment > 0 ? (
+              <p>Sorry, you already have an existing loan.</p>
+          ) : (
+              <div className="mt-5 text-sm font-medium">
+                  <form className='space-y-6' onSubmit={loanApplication}>
+                      <fieldset className='space-y-2'>
+                          <legend>{loanApplicationError && <div className="text-red-500">{loanApplicationError}</div>}</legend>
+                          <div className='flex flex-1 space-x-4 items-center'>
+                              <p className="text-green-500">Your account: ₦{data.accountBalance}</p>
+                              <p className="text-blue-500">Maximum Loan: ₦{loanDataObject.maxLoanAmount}</p>
+                              <p className="text-red-500">Total Loan Requested: ₦{loanValue}</p>
+                              <p className="text-purple-500">Repay/Month: ₦{loanDataObject.loanRepayPerMonth}</p>
+                          </div>
+                          <div>
+                              <label htmlFor="loan-amount">
+                                  <span className="after:content-['You are entitle to loan within 0 to ${profileData.maxLoanAmount}'] after:ml-0.5 after:text-red-500">
+                                      Enter Amount
+                                  </span>
+                              </label>
+                              <input type="number" name="loan-amount" id="loan-amount" min="1" max={loanDataObject.maxLoanAmount} onChange={(e) => setLoanValue(e.target.value)} required />
+                              <input type="range" className='w-full' min="1" max={loanDataObject.maxLoanAmount} defaultValue={loanValue} />
+                          </div>
+                      </fieldset>
+
+                      <div className='flex justify-center'>
+                          <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
+                              {isLoading ? "Applying" : "Apply For Loan" }
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          )
+      )
+}
+
     </motion.div>
   )
 }

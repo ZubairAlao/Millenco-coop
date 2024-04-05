@@ -29,7 +29,7 @@ export default function UserDashboardPage() {
 
   const currentDate = new Date();
   const currentTimeMs = currentDate.getTime();
-  const registrationTimeMs = new Date(data.dateRegistered.seconds * 1000)
+  const registrationTimeMs = data.dateRegistered && new Date(data.dateRegistered.seconds * 1000)
 
   // Calculate time difference in milliseconds
   const timeDifferenceMs = currentTimeMs - registrationTimeMs;
@@ -46,7 +46,14 @@ export default function UserDashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grid-rows-[100px_100px]">
         <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Name:</span> {data.userName}</p>
         <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Email:</span> {data.email}</p>
-        <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Date Registered:</span> {new Date(data.dateRegistered.seconds * 1000).toLocaleDateString()} <span className='block'>{daysUsed} day, {monthsUsed} months, {yearsUsed} years</span></p>
+        <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Date Registered:</span>{data.dateRegistered ? (
+          <>
+            {new Date(data.dateRegistered.seconds * 1000).toLocaleDateString()}
+            <span className='block'>{daysUsed} day, {monthsUsed} months, {yearsUsed} years</span>
+          </>
+        ) : (
+          <span className='block'>Date Loading...</span>
+        )}</p>
         <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Phone:</span> {data.phone}</p>
         <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Referral Name:</span> {data.referralName}</p>
         <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full min-h-full rounded-md'><span className="font-bold block">Address:</span> {data.address}</p>
@@ -63,11 +70,13 @@ export default function UserDashboardPage() {
           {data.paymentHistory ? (
             data.paymentHistory.length > 0 ? (
               data.paymentHistory.slice().reverse().map((transaction, index) => (
-                <Link key={index} className='flex py-4'>
-                  <p>Transaction Successful</p>
-                  <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()}</div>
-                  <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
-                </Link>
+                <div className='overflow-auto max-h-[300px]'>
+                  <Link to={`user-transactions/${index}`} key={index} className='flex gap-3 py-4'>
+                    <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+                    <div>Type: {transaction.paymentType}</div>
+                    <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
+                  </Link>
+                </div>
               ))
             ) : (
               <p>No records</p>

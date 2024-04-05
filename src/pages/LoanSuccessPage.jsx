@@ -5,7 +5,7 @@ import { getProfileData } from '../services/firebase';
 import { useQuery } from '@tanstack/react-query'
 import PrivateRoute from '../components/PrivateRoute';
 
-export const PaymentSuccessPage = () => {
+export const LoanSuccessPage = () => {
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
@@ -39,21 +39,10 @@ export const PaymentSuccessPage = () => {
       <PrivateRoute />
       <div className='bg-[#C8E6C9] dark:bg-[#37474F] p-8'>
         <div>
-          <h1 className="text-xl leading-snug font-semibold mb-2">Payment Successful</h1>
+          <h1 className="text-xl leading-snug font-semibold mb-2">Loan Successful</h1>
         </div>
 
         <Link to="/user-dashboard">Go to DashBoard</Link>
-
-      <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm  text-[#333333] dark:text-[#cccccc]'>
-        <p>Millenco Coop</p>
-        <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-        <p><strong>Payment Type:</strong> {data.paymentType}</p>
-        <p><strong>User Name:</strong> {data.userName}</p>
-        <p><strong>Email:</strong> {data.email}</p>
-        <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
-        <p><strong>Payment Amount:</strong> {data.paymentAmount}</p>
-        <p><strong>New Account Balance:</strong> {data.newAccountBalance}</p>
-      </div>
       </div>
     </div>
   );

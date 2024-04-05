@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { auth } from '../services/firebase'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { auth, updateProfileData } from '../services/firebase'
 import { getProfileData } from '../services/firebase'
 import { Link } from 'react-router-dom'
+
 
 
 export default function DepositPage() {
@@ -41,11 +42,40 @@ export default function DepositPage() {
       premium: 100000,
     }[data.plan],
     paymentType: "deposit",
-    paymentId: (data.paymentHistory ? data.paymentHistory.length : 0) + 1,
     plan: data.plan
   };
   
-  console.log(data.paymentHistory.length);
+  const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
+  const queryClient = useQueryClient()
+  const makeUserOldMember = async (e) => {
+    e.preventDefault();
+    setIsOldMemberLoading(true);
+    try {
+      const currentTimestamp = Date.now();
+      // Generate a random number of milliseconds between 6 months and 2 years ago
+      const randomPastTimestamp = currentTimestamp - Math.floor(Math.random() * (365 * 24 * 60 * 60 * 1000 * 1.5)) - (180 * 24 * 60 * 60 * 1000);
+      const randomPastDate = new Date(randomPastTimestamp);
+  
+      // Assuming 'auth.currentUser.uid' and 'data.dateRegistered' are defined elsewhere
+      await updateProfileData(auth.currentUser.uid, { dateRegistered: randomPastDate });
+
+      await queryClient.invalidateQueries({ queryKey: ['profileData'] })
+  
+    } catch (error) {
+      console.error('Error updating user post 6 month membership', error);
+    }
+    finally {
+      setIsOldMemberLoading(false);
+    }
+  }
+
+  const currentDate = new Date();
+  const currentTimeMs = currentDate.getTime();
+  const registrationTimeMs = data.dateRegistered && new Date(data.dateRegistered.seconds * 1000)
+  const timeDifferenceMs = currentTimeMs - registrationTimeMs;
+  const monthsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 30));
+  console.log(monthsUsed);
+
   return (
     <motion.div className='flex flex-1 flex-col justify-center sm:mx-auto sm:w-full sm:max-w-sm'
       initial={{ opacity: 0 }}
@@ -119,8 +149,12 @@ export default function DepositPage() {
         >
           <div>
               <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">Loan Repayment</h2>
-              <p className='text-center italic'>NOTE: Only fill the loan section if you have taken a loan.</p>
+              <p className='text-center italic'>NOTE: Only fill the loan section if you have taken a loan. You can only access loan after 6 months of memberships</p>
+              <p className='text-center italic'>Loan Repay Per Month ₦{data.loanRepayPerMonth}</p>
           </div>
+          {data.dateRegistered && monthsUsed < 6  ?
+            <button className=' mx-auto my-4 border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>Make Old Member</button> 
+          :
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm text-sm font-medium">
             <form className='space-y-6'>
               <fieldset className='space-y-6'>
@@ -132,9 +166,8 @@ export default function DepositPage() {
                     </span>
                   </label>
                   <select id='loan-repayment' name="loan-repayment" required autoComplete="loan-repayment">
-                    <option value="₦30,000">₦20,000</option>
-                    <option value="₦60,000">₦60,000</option>
-                    <option value="₦100,000">₦100,000</option>
+                    <option disabled value="">Based on Seleted Plan</option>
+                    <option value={data.loanRepayPerMonth}>₦{data.loanRepayPerMonth}</option>
                   </select>
                 </div>
               </fieldset>
@@ -146,6 +179,8 @@ export default function DepositPage() {
               </div>
             </form>
           </div>
+           }
+          
         </motion.div>
         : null
       }

@@ -6,6 +6,8 @@ import { faBars, faTimes,  } from '@fortawesome/free-solid-svg-icons';
 import { Ref } from 'react';
 import { auth } from "../services/firebase";
 import {signOut} from 'firebase/auth'
+import { getProfileData } from '../services/firebase';
+import { useQuery } from '@tanstack/react-query'
 
 
 
@@ -83,6 +85,14 @@ export default function Header() {
       setDarkMode(localStorage.getItem("darkMode") === "true");
     }
   }, [darkMode]);
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['profileData'],
+    queryFn: async () => {
+      const userId = auth.currentUser.uid;
+      return await getProfileData(userId);
+    }
+  })
 
   return (
     <header className='fixed top-0 left-0 right-0 text-[#333333] bg-[#E8F5E9] dark:text-[#cccccc] dark:bg-[#1A1A1A] z-50 shadow-md'>

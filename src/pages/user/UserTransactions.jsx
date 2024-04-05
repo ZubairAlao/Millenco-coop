@@ -33,9 +33,10 @@ export default function UserTransactions() {
       {data.paymentHistory ? (
         data.paymentHistory.length > 0 ? (
           data.paymentHistory.slice().reverse().map((transaction, index) => (
-            <Link to={`${transaction.paymentId}`} key={index} className='flex py-4'>
+            <Link to={`${index}`} key={index} className='flex gap-3 py-4'>
               <p>Transaction Successful</p>
-              <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()}</div>
+              <p>{transaction.paymentType}</p>
+              <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
               <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
             </Link>
           ))
