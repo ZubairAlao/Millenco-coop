@@ -3,7 +3,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import { addPaymentToFirestore, updateProfileData } from '../services/firebase';
+import { addPaymentToFirestore, updateProfileData, addLoanRepayToFirestore } from '../services/firebase';
 import { auth } from '../services/firebase';
 
 
@@ -27,6 +27,9 @@ export default function PaymentGateWay() {
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
+    initialLoanAmount: state.initialLoanAmount,
+    loanRepayPerMonth: state.loanRepayPerMonth,
+    newLoanBalance: state.initialLoanAmount - state.loanRepayPerMonth
   });
 
 const handleChange = (e) => {
@@ -46,11 +49,20 @@ const handleChange = (e) => {
       if (paymentData.cardCvc !== '123' || paymentData.cardNumber !== '1234123412341234' || paymentData.cardExpiry !== '12/23') {
         throw new Error('Invalid card details');
       }
-      await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
-      // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-      const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
-      await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
-      navigate('/payment-success');
+      if(state.paymentType === 'deposit') {
+        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
+        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+        const { cardCvc, cardNumber, cardExpiry, initialLoanAmount, loanRepayPerMonth, newLoanBalance, ...paymentWithoutSensitiveData } = paymentData;
+        await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        navigate('/payment-success');
+      } 
+      if (state.paymentType === 'loan-repay') {
+        await updateProfileData(auth.currentUser.uid, {loanPayment: newLoanBalance });
+        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+        const { cardCvc, cardNumber, cardExpiry, newAccountBalance, paymentAmount, ...paymentWithoutSensitiveData } = paymentData;
+        await addLoanRepayToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        navigate('/loan-payment-success');
+      }
     } catch (error) {
       console.error('Error updating user payment', error);
       setPaymentError(error.message); // Update the payment error state
@@ -64,12 +76,20 @@ const handleChange = (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      setPaymentError(null);
-      await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
-      // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
-      const { cardCvc, cardNumber, cardExpiry, ...paymentWithoutSensitiveData } = paymentData;
-      await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
-      navigate('/payment-success');
+      if(state.paymentType === 'deposit') {
+        await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });
+        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+        const { cardCvc, cardNumber, cardExpiry, initialLoanAmount, loanRepayPerMonth, newLoanBalance, ...paymentWithoutSensitiveData } = paymentData;
+        await addPaymentToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        navigate('/payment-success');
+      } 
+      if (state.paymentType === 'loan-repay') {
+        await updateProfileData(auth.currentUser.uid, {loanPayment: paymentData.newLoanBalance });
+        // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
+        const { cardCvc, cardNumber, cardExpiry, newAccountBalance, paymentAmount, ...paymentWithoutSensitiveData } = paymentData;
+        await addLoanRepayToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        navigate('/loan-payment-success');
+      }
     } catch (error) {
       console.error('Error updating user payment', error);
       setPaymentError(error.message);
@@ -132,7 +152,7 @@ const handleChange = (e) => {
             {/* Form footer */}
             <div className="mt-6">
               <div className="mb-4">
-                <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" name='paymentAmount' type='submit'>{isLoading ? 'Paying...' : `Pay ₦${state.depositAmount}`}</button>
+                <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" name='paymentAmount' type='submit'>{isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount : state.loanRepayPerMonth}`}</button>
               </div>
             </div>
           </form>
@@ -142,7 +162,7 @@ const handleChange = (e) => {
           <form onSubmit={stripePayment}>
               <div className="mb-4">
                   <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" type='submit'>
-                    {isLoading ? 'Paying...' : `Pay ₦${state.depositAmount}`}</button>
+                    {isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount : state.loanRepayPerMonth}`}</button>
               </div>
           </form>
         }

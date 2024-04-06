@@ -23,7 +23,7 @@ export default function LoanApplicationPage() {
   const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loanApplicationError, setLoanApplicationError] = useState(null);
-  const [loanValue, setLoanValue] = useState(data.accountBalance)
+  const [loanValue, setLoanValue] = useState(0)
   const queryClient = useQueryClient()
   const makeUserOldMember = async (e) => {
     e.preventDefault();
@@ -143,12 +143,12 @@ export default function LoanApplicationPage() {
                           </div>
                           <div>
                               <label htmlFor="loan-amount">
-                                  <span className="after:content-['You are entitle to loan within 0 to ${profileData.maxLoanAmount}'] after:ml-0.5 after:text-red-500">
-                                      Enter Amount
+                                  <span className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                                      Enter Amount [Deposit First!]
                                   </span>
                               </label>
                               <input type="number" name="loan-amount" id="loan-amount" min="0" max={loanDataObject.maxLoanAmount} onChange={(e) => setLoanValue(e.target.value)} required />
-                              <input type="range" className='w-full' min="0" max={loanDataObject.maxLoanAmount} defaultValue={loanValue} />
+                              <input type="range" className='w-full' min="0" max={loanDataObject.maxLoanAmount} value={loanValue} readOnly />
                           </div>
                       </fieldset>
 

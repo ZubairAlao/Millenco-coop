@@ -27,6 +27,7 @@ import PaymentGateWay from "./pages/PaymentGateWay"
 import { PaymentSuccessPage } from "./pages/PaymentSuccessPage"
 import UserTransactionsDetails from "./pages/user/UserTransactionsDetails"
 import { LoanSuccessPage } from "./pages/LoanSuccessPage"
+import { LoanRepaySuccessPage } from "./pages/LoanRepaySuccessPage"
 
 
 
@@ -97,6 +98,12 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route  
       path="loan-success"
       element={<LoanSuccessPage />}
+      errorElement={<Error />}
+    />
+
+    <Route  
+      path="loan-payment-success"
+      element={<LoanRepaySuccessPage />}
       errorElement={<Error />}
     />
 

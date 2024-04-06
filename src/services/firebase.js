@@ -112,3 +112,19 @@ export const addLoanToFirestore = async (userId, payment) => {
     throw error;
   }
 };
+
+export const addLoanRepayToFirestore = async (userId, payment) => {
+  try {
+    // Reference to the 'payments' collection
+    const docRef =  doc(db, 'users', userId)
+
+    await updateDoc(docRef, {
+      loanRepayHistory: arrayUnion(payment)
+    });
+
+    console.log('loan payment added to Firestore');
+  } catch (error) {
+    console.error('Error adding loan to Firestore: ', error);
+    throw error;
+  }
+};

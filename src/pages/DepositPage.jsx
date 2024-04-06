@@ -32,7 +32,7 @@ export default function DepositPage() {
   }
 
   const [tab, setTab] = useState('deposit');
-  const paymentDataObject = {
+  const depositDataObject = {
     userName: data.userName,
     email: data.email,
     initialAmount: data.accountBalance,
@@ -42,6 +42,15 @@ export default function DepositPage() {
       premium: 100000,
     }[data.plan],
     paymentType: "deposit",
+    plan: data.plan
+  };
+
+  const loanRepayDataObject = {
+    userName: data.userName,
+    email: data.email,
+    initialLoanAmount: data.loanPayment,
+    loanRepayPerMonth: data.loanRepayPerMonth,
+    paymentType: "loan-repay",
     plan: data.plan
   };
   
@@ -125,7 +134,7 @@ export default function DepositPage() {
             </fieldset>
     
             <div className='flex justify-center'>
-              <Link to='/payment' state={paymentDataObject}
+              <Link to='/payment' state={depositDataObject}
               >
                 <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
                   Submit Deposit
@@ -152,7 +161,7 @@ export default function DepositPage() {
               <p className='text-center italic'>NOTE: Only fill the loan section if you have taken a loan. You can only access loan after 6 months of memberships</p>
           </div>
           {data.dateRegistered && monthsUsed < 6  ?
-            <button className=' mx-auto my-4 border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>Make Old Member</button> 
+            <button className=' mx-auto my-4 border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>{isOldMemberLoading ? 'Loading...' : 'Make Old Member'}</button> 
           : data.loanPayment === 0 ?
           <div className='m-auto'>
             <p>You currently have no loan to repay</p>
@@ -178,9 +187,12 @@ export default function DepositPage() {
               </fieldset>
       
               <div className='flex justify-center'>
+              <Link to='/payment' state={loanRepayDataObject}
+              >
                 <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36">
-                  Submit Payment
+                  Pay Loan
                 </button>
+              </Link>
               </div>
             </form>
           </div>
