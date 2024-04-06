@@ -30,7 +30,7 @@ export const LoanSuccessPage = () => {
     return <span>Error: {error.message}</span>
   }
 
-  const paymentDateTime = new Date(data.loanDate);
+  const paymentDateTime = new Date(data.paymentDate);
   const paymentDate = paymentDateTime.toLocaleDateString();
   const paymentTime = paymentDateTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -47,7 +47,7 @@ export const LoanSuccessPage = () => {
           <p><strong>Payment Type:</strong> {data.paymentType}</p>
           <p><strong>User Name:</strong> {data.userName}</p>
           <p><strong>Email:</strong> {data.email}</p>
-          <p><strong>Loan Date:</strong> {new Date(data.loanDate).toLocaleDateString()} [{paymentTime}]</p>
+          <p><strong>Loan Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
           <p><strong>Loan Repay per Month:</strong> {data.loanRepayPerMonth}</p>
           <p><strong>Loan Request Granted:</strong> {data.loanValue}</p>
       </div>

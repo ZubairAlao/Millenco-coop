@@ -88,6 +88,9 @@ const handleChange = (e) => {
         // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
         const { cardCvc, cardNumber, cardExpiry, newAccountBalance, paymentAmount, ...paymentWithoutSensitiveData } = paymentData;
         await addLoanRepayToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        if (paymentData.newLoanBalance === 0) {
+          await updateProfileData(auth.currentUser.uid, {loanRepayPerMonth: 0 });
+        }
         navigate('/loan-payment-success');
       }
     } catch (error) {

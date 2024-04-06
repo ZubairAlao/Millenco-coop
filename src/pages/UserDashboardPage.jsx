@@ -40,6 +40,12 @@ export default function UserDashboardPage() {
   // Convert to years (approximate, doesn't consider leap years)
   const yearsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 365));
 
+  // const AllHistory = [...data.paymentHistory, ...data.loanHistory, ...data.loanRepayHistory];
+
+  // AllHistory && AllHistory.sort((a, b) => a.time - b.time);
+
+  // console.log('AllHistory', AllHistory);
+
   return (
     <div className="sm:mx-auto sm:w-full max-w-screen-xl grid gap-4 px-8 text-sm">
       
@@ -63,7 +69,7 @@ export default function UserDashboardPage() {
         <div className='grid grid-cols-1 gap-3'>
           <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Plan:</span> {data.plan}</p>
           <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Balance:</span>₦ {data.accountBalance}</p>
-          <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Loan Payment:</span>₦ {data.loanPayment} {data.loanRepayPerMonth && <span className="font-bold block">Per Month ₦ {data.loanRepayPerMonth}</span>}</p>
+          <p className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 m-auto w-full rounded-md'><span className="font-bold">Loan Payment:</span>₦ {data.loanPayment} {data.loanRepayPerMonth > 0 ? <span className="font-bold block">Per Month ₦ {data.loanRepayPerMonth}</span> : null}</p>
         </div>
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
           <h3 className='font-semibold text-xl'>Transactions</h3>

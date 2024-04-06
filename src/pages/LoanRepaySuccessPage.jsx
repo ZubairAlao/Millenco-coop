@@ -30,9 +30,6 @@ export const LoanRepaySuccessPage = () => {
     return <span>Error: {error.message}</span>
   }
 
-  const paymentDateTime = new Date(data.paymentDate);
-  const paymentDate = paymentDateTime.toLocaleDateString();
-  const paymentTime = paymentDateTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
   return (
     <div className="max-w-screen-sm h-full mx-auto pt-28 pb-12 px-8 my-auto">
@@ -50,9 +47,9 @@ export const LoanRepaySuccessPage = () => {
         <p><strong>Payment Type:</strong> {data.paymentType}</p>
         <p><strong>User Name:</strong> {data.userName}</p>
         <p><strong>Email:</strong> {data.email}</p>
-        <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
+        <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{new Date(data.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
         <p><strong>Payment Amount:</strong> {data.loanRepayPerMonth}</p>
-        <p><strong>New Loan Balance:</strong> {data.loanPayment}</p>
+        <p><strong>New Loan Balance:</strong> {data.newLoanBalance}</p>
       </div>
       </div>
     </div>

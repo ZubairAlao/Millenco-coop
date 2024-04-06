@@ -65,7 +65,7 @@ export default function LoanApplicationPage() {
     }[data.plan] * data.accountBalance,
     paymentType: "loan-application",
     plan: data.plan,
-    loanDate: new Date().toISOString(),
+    paymentDate: new Date().toISOString(),
     loanValue: loanValue,
     loanRepayPerMonth: (loanValue * 6 * 3) / 100
   };
@@ -123,7 +123,7 @@ export default function LoanApplicationPage() {
           <p className='text-center italic'>NOTE: Loans are 2x for Basic, 3x for Business/Premium plans. Membership must be 6 months old. Repay within 6 months.</p>
       </div>
       {data.dateRegistered && monthsUsed < 6 ? (
-        <div className='flex justify-center flex-col my-4'>
+        <div className='flex justify-center items-center flex-col gap-3 my-4'>
             <p>You must be a member for at least 6 months to apply for a loan.</p>
             <button className='border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>{isOldMemberLoading ? 'Loading...' : 'Make Old Member'}</button>
         </div>

@@ -17,13 +17,15 @@ export default function UserTransactionsDetails() {
       const profileData = await getProfileData(userId);
       const filteredPaymentData = profileData. paymentHistory[id];
       const filteredLoanData = profileData.loanHistory[id];
-      return {filteredPaymentData, filteredLoanData, profileData};
+      const filteredRepayLoanData = profileData.loanRepayHistory[id];
+      return {filteredPaymentData, filteredLoanData, filteredRepayLoanData, profileData};
     }
   });
 
   console.log(data);
   const isPayment = type === 'payment';
   const isLoan = type === 'loan';
+  const isLoanRepay = type === 'loan-repay';
 
   if (isPending) {
     return (
@@ -66,9 +68,23 @@ export default function UserTransactionsDetails() {
             <p><strong>Payment Type:</strong> {data.filteredLoanData.paymentType}</p>
             <p><strong>User Name:</strong> {data.filteredLoanData.userName}</p>
             <p><strong>Email:</strong> {data.filteredLoanData.email}</p>
-            <p><strong>Loan Date:</strong> {new Date(data.filteredLoanData.loanDate).toLocaleDateString()} [{new Date(data.filteredLoanData.loanDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
+            <p><strong>Loan Date:</strong> {new Date(data.filteredLoanData.paymentDate).toLocaleDateString()} [{new Date(data.filteredLoanData.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
             <p><strong>Loan Repay per Month:</strong> {data.filteredLoanData.loanRepayPerMonth}</p>
             <p><strong>Loan Request Granted:</strong> {data.filteredLoanData.loanValue}</p>
+          </div>
+        }
+
+        {isLoanRepay && 
+          <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm  text-[#333333] dark:text-[#cccccc]'>
+            <p>Millenco Coop</p>
+            <p>No 13, Lagos Street,Ikeja, Lagos State</p>
+            <p>Receipt ID {parseInt(id) + 1}</p>
+            <p><strong>Payment Type:</strong> {data.filteredRepayLoanData.paymentType}</p>
+            <p><strong>User Name:</strong> {data.filteredRepayLoanData.userName}</p>
+            <p><strong>Email:</strong> {data.filteredRepayLoanData.email}</p>
+            <p><strong>Payment Date:</strong> {new Date(data.filteredRepayLoanData.paymentDate).toLocaleDateString()} [{new Date(data.filteredRepayLoanData.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
+            <p><strong>Payment Amount:</strong> {data.filteredRepayLoanData.loanRepayPerMonth}</p>
+            <p><strong>New Loan Balance:</strong> {data.filteredRepayLoanData.newLoanBalance}</p>
           </div>
         }
       </div>

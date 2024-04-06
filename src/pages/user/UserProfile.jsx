@@ -68,7 +68,7 @@ export default function UserProfile() {
         const imageUrl = await uploadImageToFirebase(image);
         if (imageUrl) {
           await updateProfileData(auth.currentUser.uid, { imageUrl: imageUrl });
-          updateProfile(auth.currentUser, {
+          await updateProfile(auth.currentUser, {
             photoURL: imageUrl
           })
           setImageEdit(false);
@@ -112,7 +112,7 @@ export default function UserProfile() {
       <h1 className="text-2xl text-center font-bold mb-4">User Profile</h1>
       <div className='grid gap-2'>
       <div className='flex justify-center items-center gap-4'>
-      <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{backgroundImage: `url(${data.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
+      <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
         {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
         <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
           {imageEdit ? 'Save' : 'Edit'}
