@@ -40,11 +40,15 @@ export default function UserDashboardPage() {
   // Convert to years (approximate, doesn't consider leap years)
   const yearsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 365));
 
-  // const AllHistory = [...data.paymentHistory, ...data.loanHistory, ...data.loanRepayHistory];
+  const AllHistory = [...data.paymentHistory, ...data.loanHistory, ...data.loanRepayHistory];
 
-  // AllHistory && AllHistory.sort((a, b) => a.time - b.time);
+  const sortedHistory = AllHistory && AllHistory.sort((a, b) => {
+    const dateA = new Date(a.paymentDate);
+    const dateB = new Date(b.paymentDate);
+    return dateB - dateA; // descending order
+  });
 
-  // console.log('AllHistory', AllHistory);
+  console.log('AllHistory', sortedHistory);
 
   return (
     <div className="sm:mx-auto sm:w-full max-w-screen-xl grid gap-4 px-8 text-sm">
@@ -74,13 +78,35 @@ export default function UserDashboardPage() {
         <div className="grid bg-[#C8E6C9] dark:bg-[#37474F] p-8 mx-auto w-full rounded-md">
           <h3 className='font-semibold text-xl'>Transactions</h3>
           <div className='overflow-auto max-h-[250px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
-            {data.paymentHistory ? (
-              data.paymentHistory.length > 0 ? (
-                data.paymentHistory.slice().reverse().map((transaction, index) => (
-                    <Link to={`user-transactions/payment/${data.paymentHistory.length - index - 1}`} key={index} className='flex gap-3 py-4'>
+            {sortedHistory ? (
+              sortedHistory.length > 0 ? (
+                sortedHistory.map((transaction, index) => (
+                    <Link
+                      to={`user-transactions/${
+                            transaction.paymentType === 'deposit'
+                            ? "payment"
+                            : transaction.paymentType === 'loan-application'
+                            ? "loan"
+                            : transaction.paymentType === 'loan-repay'
+                            ? "loan-repay"
+                            : null 
+                      }/${transaction.ref}`} 
+                      key={index} 
+                      className='flex gap-3 py-4'
+                    >
                       <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
                       <div>Type: {transaction.paymentType}</div>
-                      <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
+                      <div className='ml-auto'>
+                      {
+                        transaction.paymentType === 'deposit'
+                          ? transaction.paymentAmount
+                          : transaction.paymentType === 'loan-application'
+                          ? transaction.loanValue
+                          : transaction.paymentType === 'loan-repay'
+                          ? transaction.loanRepayPerMonth
+                          : null // Handle other cases if necessary
+                      }
+                      </div>
                     </Link>
                 ))
               ) : (
