@@ -40,7 +40,11 @@ export default function UserDashboardPage() {
   // Convert to years (approximate, doesn't consider leap years)
   const yearsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 365));
 
-  const AllHistory = [...data.paymentHistory, ...data.loanHistory, ...data.loanRepayHistory];
+  const AllHistory = [
+    ...(data.paymentHistory || []), 
+    ...(data.loanHistory || []), 
+    ...(data.loanRepayHistory || [])
+  ];
 
   const sortedHistory = AllHistory && AllHistory.sort((a, b) => {
     const dateA = new Date(a.paymentDate);
