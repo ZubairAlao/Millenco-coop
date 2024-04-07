@@ -20,6 +20,7 @@ export default function PaymentGateWay() {
     userName: state.userName,
     email: state.email,
     plan: state.plan,
+    ref: crypto.randomUUID(),
     paymentType: state.paymentType,
     paymentDate: new Date().toISOString(),
     newAccountBalance: state.initialAmount + state.depositAmount,
@@ -44,6 +45,9 @@ const handleChange = (e) => {
   const cardPayment = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    if (paymentData === null) {
+      throw new Error('Access Denied: Please complete the payment process properly.');
+    }
     try {
       setPaymentError(null);
       if (paymentData.cardCvc !== '123' || paymentData.cardNumber !== '1234123412341234' || paymentData.cardExpiry !== '12/23') {
@@ -61,6 +65,9 @@ const handleChange = (e) => {
         // Exclude cvc, cardNumber, and cardExpiry from paymentData when submitting to Firestore
         const { cardCvc, cardNumber, cardExpiry, newAccountBalance, paymentAmount, ...paymentWithoutSensitiveData } = paymentData;
         await addLoanRepayToFirestore(auth.currentUser.uid, paymentWithoutSensitiveData);
+        if (paymentData.newLoanBalance === 0) {
+          await updateProfileData(auth.currentUser.uid, {loanRepayPerMonth: 0 });
+        }
         navigate('/loan-payment-success');
       }
     } catch (error) {
@@ -75,6 +82,9 @@ const handleChange = (e) => {
   const stripePayment = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    if (paymentData === null) {
+      throw new Error('Access Denied: Please complete the payment process properly.');
+    }
     try {
       if(state.paymentType === 'deposit') {
         await updateProfileData(auth.currentUser.uid, {accountBalance: paymentData.newAccountBalance });

@@ -34,7 +34,7 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
           className="md:w-3/6 w-full order-2 md:order-1"
         >
-          <h1 className="text-3xl md:text-5xl mb-4 font-bold">Unlock Financial
+          <h1 className="text-3xl md:text-5xl mb-4 font-bold">Unlock Financial{" "}
             <motion.span
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}

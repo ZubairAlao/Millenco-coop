@@ -65,6 +65,7 @@ export default function LoanApplicationPage() {
     }[data.plan] * data.accountBalance,
     paymentType: "loan-application",
     plan: data.plan,
+    ref: crypto.randomUUID(),
     paymentDate: new Date().toISOString(),
     loanValue: loanValue,
     loanRepayPerMonth: (loanValue * 6 * 3) / 100

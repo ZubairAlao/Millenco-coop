@@ -42,7 +42,7 @@ export default function UserTransactions() {
           {data.paymentHistory ? (
             data.paymentHistory.length > 0 ? (
               data.paymentHistory.slice().reverse().map((transaction, index) => (
-                <Link to={`payment/${data.paymentHistory.length - index - 1}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
+                <Link to={`payment/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
                   <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
@@ -62,10 +62,10 @@ export default function UserTransactions() {
           {data.loanHistory ? (
             data.loanHistory.length > 0 ? (
               data.loanHistory.slice().reverse().map((transaction, index) => (
-                <Link to={`loan/${data.loanHistory.length - index - 1}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
+                <Link to={`loan/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Repay Amount: {transaction.loanValue}</div>
+                  <div className='ml-auto'>Loan Amount: {transaction.loanValue}</div>
                 </Link>
               ))
             ) : (
@@ -82,10 +82,10 @@ export default function UserTransactions() {
           {data.loanRepayHistory ? (
             data.loanRepayHistory.length > 0 ? (
               data.loanRepayHistory.slice().reverse().map((transaction, index) => (
-                <Link to={`loan-repay/${data.loanRepayHistory.length - index - 1}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
+                <Link to={`loan-repay/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Amount: {transaction.loanRepayPerMonth}</div>
+                  <div className='ml-auto'>Loan Repay Amount: {transaction.loanRepayPerMonth}</div>
                 </Link>
               ))
             ) : (

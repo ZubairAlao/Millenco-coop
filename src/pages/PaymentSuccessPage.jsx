@@ -48,6 +48,7 @@ export const PaymentSuccessPage = () => {
         <p>Millenco Coop</p>
         <p>No 13, Lagos Street,Ikeja, Lagos State</p>
         <p><strong>Payment Type:</strong> {data.paymentType}</p>
+        <p><strong>Transaction Ref:</strong> {data.ref}</p>
         <p><strong>User Name:</strong> {data.userName}</p>
         <p><strong>Email:</strong> {data.email}</p>
         <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
