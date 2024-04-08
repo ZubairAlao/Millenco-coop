@@ -181,7 +181,7 @@ export default function DepositPage() {
                   </label>
                   <select id='loan-repayment' name="loan-repayment" required autoComplete="loan-repayment">
                     <option disabled value="">Based on Seleted Plan</option>
-                    <option value={data.loanRepayPerMonth}>₦{data.loanRepayPerMonth}</option>
+                    <option value={data.loanRepayPerMonth}>₦{data.loanRepayPerMonth.toLocaleString()}</option>
                   </select>
                 </div>
               </fieldset>

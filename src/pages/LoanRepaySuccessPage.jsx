@@ -49,8 +49,8 @@ export const LoanRepaySuccessPage = () => {
         <p><strong>User Name:</strong> {data.userName}</p>
         <p><strong>Email:</strong> {data.email}</p>
         <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{new Date(data.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
-        <p><strong>Payment Amount:</strong> {data.loanRepayPerMonth}</p>
-        <p><strong>New Loan Balance:</strong> {data.newLoanBalance}</p>
+        <p><strong>Payment Amount:</strong> ₦{data.loanRepayPerMonth}</p>
+        <p><strong>New Loan Balance:</strong> ₦{data.newLoanBalance}</p>
       </div>
       </div>
     </div>

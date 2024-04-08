@@ -62,7 +62,7 @@ export default function UserTransactionsDetails() {
               <p><strong>Email:</strong> {transaction.email}</p>
               <p><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
               <p><strong>Payment Amount:</strong> {transaction.paymentAmount}</p>
-              <p><strong>New Account Balance:</strong> {transaction.newAccountBalance}</p>
+              <p><strong>New Account Balance:</strong> ₦{transaction.newAccountBalance}</p>
             </div>
           ))
         }
@@ -76,8 +76,8 @@ export default function UserTransactionsDetails() {
               <p><strong>User Name:</strong> {transaction.userName}</p>
               <p><strong>Email:</strong> {transaction.email}</p>
               <p><strong>Loan Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} [{new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
-              <p><strong>Loan Repay per Month:</strong> {transaction.loanRepayPerMonth}</p>
-              <p><strong>Loan Request Granted:</strong> {transaction.loanValue}</p>
+              <p><strong>Loan Repay per Month:</strong> ₦{transaction.loanRepayPerMonth}</p>
+              <p><strong>Loan Request Granted:</strong> ₦{transaction.loanValue}</p>
             </div>
           ))
         }
@@ -92,8 +92,8 @@ export default function UserTransactionsDetails() {
               <p><strong>User Name:</strong> {transaction.userName}</p>
               <p><strong>Email:</strong> {transaction.email}</p>
               <p><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} [{new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
-              <p><strong>Payment Amount:</strong> {transaction.loanRepayPerMonth}</p>
-              <p><strong>New Loan Balance:</strong> {transaction.newLoanBalance}</p>
+              <p><strong>Payment Amount:</strong> ₦{transaction.loanRepayPerMonth}</p>
+              <p><strong>New Loan Balance:</strong> ₦{transaction.newLoanBalance}</p>
             </div>
           ))
         }

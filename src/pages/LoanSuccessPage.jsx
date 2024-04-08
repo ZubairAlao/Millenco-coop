@@ -49,8 +49,8 @@ export const LoanSuccessPage = () => {
           <p><strong>User Name:</strong> {data.userName}</p>
           <p><strong>Email:</strong> {data.email}</p>
           <p><strong>Loan Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
-          <p><strong>Loan Repay per Month:</strong> {data.loanRepayPerMonth}</p>
-          <p><strong>Loan Request Granted:</strong> {data.loanValue}</p>
+          <p><strong>Loan Repay per Month:</strong> ₦{data.loanRepayPerMonth}</p>
+          <p><strong>Loan Request Granted:</strong> ₦{data.loanValue}</p>
       </div>
 
         <Link to="/user-dashboard">Go to DashBoard</Link>

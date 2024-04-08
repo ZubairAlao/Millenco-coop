@@ -45,7 +45,7 @@ export default function UserTransactions() {
                 <Link to={`payment/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Amount: {transaction.paymentAmount}</div>
+                  <div className='ml-auto'>Amount: ₦{transaction.paymentAmount}</div>
                 </Link>
               ))
             ) : (
@@ -65,7 +65,7 @@ export default function UserTransactions() {
                 <Link to={`loan/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Amount: {transaction.loanValue}</div>
+                  <div className='ml-auto'>Loan Amount: ₦{transaction.loanValue}</div>
                 </Link>
               ))
             ) : (
@@ -85,7 +85,7 @@ export default function UserTransactions() {
                 <Link to={`loan-repay/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Repay Amount: {transaction.loanRepayPerMonth}</div>
+                  <div className='ml-auto'>Loan Repay Amount: ₦{transaction.loanRepayPerMonth}</div>
                 </Link>
               ))
             ) : (

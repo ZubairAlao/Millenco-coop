@@ -67,7 +67,7 @@ export default function LoanApplicationPage() {
     plan: data.plan,
     ref: crypto.randomUUID(),
     paymentDate: new Date().toISOString(),
-    loanValue: loanValue,
+    loanValue: parseInt(loanValue),
     loanRepayPerMonth: (loanValue * 6 * 3) / 100
   };
 
@@ -137,10 +137,10 @@ export default function LoanApplicationPage() {
                       <fieldset className='space-y-2'>
                           <legend>{loanApplicationError && <div className="text-red-500">{loanApplicationError}</div>}</legend>
                           <div className='flex flex-1 space-x-4 items-center'>
-                              <p className="text-green-500">Your account: ₦{data.accountBalance}</p>
-                              <p className="text-blue-500">Maximum Loan: ₦{loanDataObject.maxLoanAmount}</p>
-                              <p className="text-red-500">Total Loan Requested: ₦{loanValue}</p>
-                              <p className="text-purple-500">Repay/Month: ₦{loanDataObject.loanRepayPerMonth}</p>
+                              <p className="text-green-500">Your account: ₦{data.accountBalance.toLocaleString()}</p>
+                              <p className="text-blue-500">Maximum Loan: ₦{loanDataObject.maxLoanAmount.toLocaleString()}</p>
+                              <p className="text-red-500">Total Loan Requested: ₦{parseInt(loanValue).toLocaleString()}</p>
+                              <p className="text-purple-500">Repay/Month: ₦{parseInt(loanDataObject.loanRepayPerMonth).toLocaleString()}</p>
                           </div>
                           <div>
                               <label htmlFor="loan-amount">

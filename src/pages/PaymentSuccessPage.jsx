@@ -52,8 +52,8 @@ export const PaymentSuccessPage = () => {
         <p><strong>User Name:</strong> {data.userName}</p>
         <p><strong>Email:</strong> {data.email}</p>
         <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
-        <p><strong>Payment Amount:</strong> {data.paymentAmount}</p>
-        <p><strong>New Account Balance:</strong> {data.newAccountBalance}</p>
+        <p><strong>Payment Amount:</strong> ₦{data.paymentAmount}</p>
+        <p><strong>New Account Balance:</strong> ₦{data.newAccountBalance}</p>
       </div>
       </div>
     </div>
