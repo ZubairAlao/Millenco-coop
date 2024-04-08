@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon, faSun, faUser, faMoneyBill, faHandHoldingUsd, faEdit, faSignOutAlt, faBell  } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun, faUser, faMoneyBill, faHandHoldingUsd, faEdit, faSignOutAlt, faBell,faChartBar  } from '@fortawesome/free-solid-svg-icons';
 import { faBars, faTimes,  } from '@fortawesome/free-solid-svg-icons';
 import { Ref } from 'react';
 import { auth } from "../services/firebase";
@@ -220,13 +220,18 @@ export default function Header() {
                 <div className="absolute top-[55px] right-0 bg-white dark:bg-gray-800 w-44 shadow-lg rounded-md">
                   
                   <div className="py-1">
-                    <p className='px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700' onClick={toggleProfile}>{auth.currentUser.displayName}</p>
+                  <div
+                      className="flex items-center px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <FontAwesomeIcon icon={faUser} className="mr-2" />
+                      {auth.currentUser.displayName}
+                    </div>
                     <Link
                       to="/user-dashboard"
                       onClick={toggleProfile}
                       className="flex items-center px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                      <FontAwesomeIcon icon={faUser} className="mr-2" />
+                      <FontAwesomeIcon icon={faChartBar} className="mr-2" />
                       Dashboard
                     </Link>
                     <Link

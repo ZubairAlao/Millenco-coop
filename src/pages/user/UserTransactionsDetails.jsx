@@ -15,18 +15,15 @@ export default function UserTransactionsDetails() {
     queryFn: async () => {
       const userId = auth.currentUser.uid;
       const profileData = await getProfileData(userId);
-      // const filteredPaymentData = profileData. paymentHistory[id];
-      // const filteredLoanData = profileData.loanHistory[id];
-      // const filteredRepayLoanData = profileData.loanRepayHistory[id];
-      // return {filteredPaymentData, filteredLoanData, filteredRepayLoanData, profileData};
-        const filteredPaymentData = profileData.paymentHistory.filter(payment => payment.ref === referenceId);
-        const filteredLoanData = profileData.loanHistory.filter(loan => loan.ref === referenceId);
-        const filteredRepayLoanData = profileData.loanRepayHistory.filter(repay => repay.ref === referenceId);
-        return { filteredPaymentData, filteredLoanData, filteredRepayLoanData, profileData };
+      return profileData;
     }
   });
 
-  console.log(data);
+  console.log("reference",referenceId);
+  console.log("data",data);
+
+
+
   const isPayment = type === 'payment';
   const isLoan = type === 'loan';
   const isLoanRepay = type === 'loan-repay';
@@ -46,54 +43,71 @@ export default function UserTransactionsDetails() {
   return (
     <div className=''>
       <PrivateRoute />
-      <Link to='/user-dashboard/user-transactions'>
-        <FontAwesomeIcon icon={faArrowLeft} />
+      <Link to='/user-dashboard/user-transactions' className="flex items-center text-[#388E3C] dark:text-[#ff6f00] hover:opacity-70 mb-2">
+        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+        Back
       </Link>
       <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm bg-[#C8E6C9] dark:bg-[#37474F] text-[#333333] dark:text-[#cccccc]'>
-        <h3 className='font-semibold py-2'>Transaction Details</h3>
         {isPayment && 
-          data.filteredPaymentData.map((transaction, index) => (
-            <div>
-              <p>Millenco Coop</p>
-              <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-              <p>Receipt Ref : {referenceId}</p>
-              <p><strong>Payment Type:</strong> {transaction.paymentType}</p>
-              <p><strong>User Name:</strong> {transaction.userName}</p>
-              <p><strong>Email:</strong> {transaction.email}</p>
-              <p><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
-              <p><strong>Payment Amount:</strong> {transaction.paymentAmount}</p>
-              <p><strong>New Account Balance:</strong> ₦{transaction.newAccountBalance}</p>
-            </div>
-          ))
+          data && data.paymentHistory
+            .filter(payment => payment.ref === referenceId)
+            .map((transaction, index) => (
+              <div key={index}>
+                <h1 className="text-xl font-semibold text-center">Payment Transaction Details</h1>
+                <p className='text-center'><strong></strong> Millenco Cooperative Society</p>
+                <p className="text-sm mb-4 text-center">No 13, Lagos Street, Ikeja, Lagos State</p>
+                <div className="space-y-2">
+                  <p className="text-sm"><strong>Payment Type:</strong> {transaction.paymentType}</p>
+                  <p className="text-sm"><strong>Transaction Ref:</strong> {transaction.ref}</p>
+                  <p className="text-sm"><strong>User Name:</strong> {transaction.userName}</p>
+                  <p className="text-sm"><strong>Email:</strong> {transaction.email}</p>
+                  <p className="text-sm"><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleString()}</p>
+                  <p className="text-sm"><strong>Payment Amount:</strong> ₦{transaction.paymentAmount && transaction.paymentAmount.toLocaleString()}</p>
+                  <p className="text-sm"><strong>New Account Balance:</strong> ₦{transaction.newAccountBalance && transaction.newAccountBalance.toLocaleString()}</p>
+                </div>
+              </div>
+            ))
         }
         {isLoan && 
-          data.filteredLoanData.map((transaction, index) => (
-            <div>
-              <p>Millenco Coop</p>
-              <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-              <p>Receipt Ref : {referenceId}</p>
-              <p><strong>Payment Type:</strong> {transaction.paymentType}</p>
-              <p><strong>User Name:</strong> {transaction.userName}</p>
-              <p><strong>Email:</strong> {transaction.email}</p>
-              <p><strong>Loan Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} [{new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
-              <p><strong>Loan Repay per Month:</strong> ₦{transaction.loanRepayPerMonth}</p>
-              <p><strong>Loan Request Granted:</strong> ₦{transaction.loanValue}</p>
+          data && data.loanHistory
+          .filter(loan => loan.ref === referenceId)
+          .map((transaction, index) => (
+            <div key={index}>
+              <h1 className="text-xl font-semibold text-center">Loan Request Details</h1>
+              <p className='text-center'><strong></strong> Millenco Cooperative Society</p>
+              <p className="text-sm mb-4 text-center">No 13, Lagos Street, Ikeja, Lagos State</p>
+              <div className="space-y-2">
+                <p className="text-sm"><strong>Payment Type:</strong> {transaction.paymentType}</p>
+                <p className="text-sm"><strong>Transaction Ref:</strong> {transaction.ref}</p>
+                <p className="text-sm"><strong>User Name:</strong> {transaction.userName}</p>
+                <p className="text-sm"><strong>Email:</strong> {transaction.email}</p>
+                <p className="text-sm"><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleString()}</p>
+                <p className="text-sm"><strong>Loan Repay per Month:</strong> ₦{transaction.loanRepayPerMonth && transaction.loanRepayPerMonth.toLocaleString()}</p>
+                <p className="text-sm"><strong>Loan Request Granted:</strong> ₦{transaction.loanValue && transaction.loanValue.toLocaleString()}</p>
+              </div>
             </div>
           ))
         }
 
         {isLoanRepay && 
-          data.filteredRepayLoanData.map((transaction, index) => (
-            <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm  text-[#333333] dark:text-[#cccccc]'>
-              <p>Millenco Coop</p>
-              <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-              <p>Receipt Ref : {referenceId}</p>
-              <p><strong>Payment Type:</strong> {transaction.paymentType}</p>
-              <p><strong>User Name:</strong> {transaction.userName}</p>
-              <p><strong>Email:</strong> {transaction.email}</p>
-              <p><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleDateString()} [{new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</p>
-              <p><strong>Payment Amount:</strong> ₦{transaction.loanRepayPerMonth}</p>
-              <p><strong>New Loan Balance:</strong> ₦{transaction.newLoanBalance}</p>
+          data && data.loanRepayHistory
+          .filter(loanRepay => loanRepay.ref === referenceId)
+          .map((transaction, index) => (
+            <div key={index}>
+              <h1 className="text-xl font-semibold text-center">Loan Payment Details</h1>
+              <p className='text-center'><strong></strong> Millenco Cooperative Society</p>
+              <p className="text-sm mb-4 text-center">No 13, Lagos Street, Ikeja, Lagos State</p>
+              <div className="space-y-2">
+                <p className="text-sm"><strong>Payment Type:</strong> {transaction.paymentType}</p>
+                <p className="text-sm"><strong>Transaction Ref:</strong> {transaction.ref}</p>
+                <p className="text-sm"><strong>User Name:</strong> {transaction.userName}</p>
+                <p className="text-sm"><strong>Email:</strong> {transaction.email}</p>
+                <p className="text-sm"><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleString()}</p>
+                <p className="text-sm"><strong>Payment Amount:</strong> ₦{transaction.loanRepayPerMonth && transaction.loanRepayPerMonth.toLocaleString()}</p>
+                <p className="text-sm">
+                  <strong>New Loan Balance:</strong> {transaction.newLoanBalance === 0 ? "Loan Cleared" : `₦${transaction.newLoanBalance && transaction.newLoanBalance.toLocaleString()}`}
+                </p>
+              </div>
             </div>
           ))
         }

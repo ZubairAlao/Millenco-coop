@@ -17,8 +17,8 @@ export default function UserProfile() {
   const [email, setEmail] = useState('');
   const [emailEdit, setEmailEdit] = useState(false);
 
-  const [plan, setPlan] = useState('');
-  const [planEdit, setPlanEdit] = useState(false);
+  const [referralName, setReferralName] = useState('');
+  const [referralNameEdit, setReferralNameEdit] = useState(false);
 
   const [address, setAddress] = useState('');
   const [addressEdit, setAddressEdit] = useState(false);
@@ -45,9 +45,9 @@ export default function UserProfile() {
         await updateProfileData(auth.currentUser.uid, { email: email });
         setEmailEdit(false);
       }
-      if (planEdit) {
-        await updateProfileData(auth.currentUser.uid, { plan:plan });
-        setPlanEdit(false);
+      if (referralNameEdit) {
+        await updateProfileData(auth.currentUser.uid, { referralName: referralName });
+        setReferralNameEdit(false);
       }
 
       if (addressEdit) {
@@ -91,7 +91,7 @@ export default function UserProfile() {
     queryKey: ['profileData'],
     queryFn: async () => {
       const userId = auth.currentUser.uid;
-      return await getProfileData(userId);
+      return await getProfileData(userId);p
     }
   })
 
@@ -119,14 +119,21 @@ export default function UserProfile() {
         </button>
       </div>
 
-        <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
+        <div className='flex items-center justify-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Personal Information</p>
-            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName} onChange={(e) => setUserName(e.target.value)} required autoComplete="username"/> : data.userName}</p>
+            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName} onChange={(e) => setUserName(e.target.value)} required/> : data.userName}</p>
           </div>
-          <button className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
-            {userNameEdit ? 'Save' : 'Edit'}
-          </button>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
+              {userNameEdit ? 'Save' : 'Edit'}
+            </button>
+            {userNameEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setUserNameEdit(!userNameEdit)}>
+                cancel
+              </button> : null
+            } 
+          </div>
         </div>
 
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
@@ -134,21 +141,16 @@ export default function UserProfile() {
             <p className='text-base font-semibold'>Email Address</p>
             <p><span className="font-bold">Email:</span> {emailEdit ? <input type="text" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"/> : data.email}</p>
           </div>
-          <button
-            className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setEmailEdit(!emailEdit); if (emailEdit) {saveProfile();}}}
-          >
-            {emailEdit ? 'Save' : 'Edit'}
-          </button>
-        </div>
-
-        <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
-          <div>
-            <p className='text-base font-semibold'>Plan</p>
-            <p><span className="font-bold">Plan:</span> {planEdit ? <input type="text" name="plan" id="plan" value={plan} onChange={(e) => setPlan(e.target.value)} required autoComplete="plan"/> : data.plan}</p>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setEmailEdit(!emailEdit); if (emailEdit) {saveProfile();}}}>
+              {emailEdit ? 'Save' : 'Edit'}
+            </button>
+            {emailEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setEmailEdit(!emailEdit)}>
+                cancel
+              </button> : null
+            } 
           </div>
-          <button className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setPlanEdit(!planEdit); if (planEdit) {saveProfile();}}}>
-            {planEdit ? 'Save' : 'Edit'}
-          </button>
         </div>
 
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
@@ -156,19 +158,41 @@ export default function UserProfile() {
             <p className='text-base font-semibold'>Address</p>
             <p><span className="font-bold">Address:</span> {addressEdit ? <input type="text" name="address" id="address" value={address} onChange={(e) => setAddress(e.target.value)} required autoComplete="address"/> : data.address}</p>
           </div>
-          <button className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setAddressEdit(!addressEdit); if (addressEdit) {saveProfile();}}}>
-            {addressEdit ? 'Save' : 'Edit'}
-          </button>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setAddressEdit(!addressEdit); if (addressEdit) {saveProfile();}}}>
+              {addressEdit ? 'Save' : 'Edit'}
+            </button>
+            {addressEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setAddressEdit(!addressEdit)}>
+                cancel
+              </button> : null
+            } 
+          </div>
         </div>
 
-        <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
+        <div className='flex items-center justify-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Gender</p>
-            <p><span className="font-bold">Gender:</span> {genderEdit ? <input type="text" name="gender" id="gender" value={gender} onChange={(e) => setGender(e.target.value)} required autoComplete="gender"/> : data.gender}</p>
+            <p><span className="font-bold">Gender:</span> 
+              {genderEdit ? 
+              <select id='gender' name="gender" required autoComplete="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                <option disabled value="" selected>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="none">I prefer not to say</option>
+              </select> : data.gender}
+            </p>
           </div>
-          <button className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setGenderEdit(!genderEdit); if (genderEdit) {saveProfile();}}}>
-            {genderEdit ? 'Save' : 'Edit'}
-          </button>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setGenderEdit(!genderEdit); if (genderEdit) {saveProfile();}}}>
+              {genderEdit ? 'Save' : 'Edit'}
+            </button>
+            {genderEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setGenderEdit(!genderEdit)}>
+                cancel
+              </button> : null
+            } 
+          </div>
         </div>
 
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
@@ -176,9 +200,33 @@ export default function UserProfile() {
             <p className='text-base font-semibold'>Phone</p>
             <p><span className="font-bold">Phone:</span> {phoneEdit ? <input type="text" name="phone" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required autoComplete="phone"/> : data.phone}</p>
           </div>
-          <button className="ml-auto border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setPhoneEdit(!phoneEdit); if (phoneEdit) {saveProfile();}}}>
-            {phoneEdit ? 'Save' : 'Edit'}
-          </button>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setPhoneEdit(!phoneEdit); if (phoneEdit) {saveProfile();}}}>
+              {phoneEdit ? 'Save' : 'Edit'}
+            </button>
+            {phoneEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setPhoneEdit(!phoneEdit)}>
+                cancel
+              </button> : null
+            } 
+          </div>
+        </div>
+
+        <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
+          <div>
+            <p className='text-base font-semibold'>Referral Name</p>
+            <p><span className="font-bold">Referral:</span> {referralNameEdit ? <input type="text" name="plan" id="plan" value={referralName} onChange={(e) => setReferralName(e.target.value)} required autoComplete="plan"/> : data.referralName}</p>
+          </div>
+          <div className='ml-auto'>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setReferralNameEdit(!referralNameEdit); if (referralNameEdit) {saveProfile();}}}>
+              {referralNameEdit ? 'Save' : 'Edit'}
+            </button>
+            {referralNameEdit ? 
+              <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setReferralNameEdit(!referralNameEdit)}>
+                cancel
+              </button> : null
+            } 
+          </div>
         </div>
       </div>
     </div>

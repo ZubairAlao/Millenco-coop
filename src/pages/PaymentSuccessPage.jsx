@@ -37,24 +37,20 @@ export const PaymentSuccessPage = () => {
   return (
     <div className="max-w-screen-sm h-full mx-auto pt-28 pb-12 px-8 my-auto">
       <PrivateRoute />
-      <div className='bg-[#C8E6C9] dark:bg-[#37474F] p-8'>
-        <div>
-          <h1 className="text-xl leading-snug font-semibold mb-2">Loan Request Successful</h1>
+      <div className="bg-green-200 dark:bg-gray-800 p-8 rounded-md shadow-md">
+        <h1 className="text-xl font-semibold text-center">Payment Transaction Successful</h1>
+        <p className='text-center'><strong></strong> Millenco Cooperative Society</p>
+        <p className="text-sm mb-4 text-center">No 13, Lagos Street, Ikeja, Lagos State</p>
+        <div className="space-y-2">
+          <p className="text-sm"><strong>Payment Type:</strong> {data.paymentType}</p>
+          <p className="text-sm"><strong>Transaction Ref:</strong> {data.ref}</p>
+          <p className="text-sm"><strong>User Name:</strong> {data.userName}</p>
+          <p className="text-sm"><strong>Email:</strong> {data.email}</p>
+          <p className="text-sm"><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleString()}</p>
+          <p className="text-sm"><strong>Payment Amount:</strong> ₦{data.paymentAmount && data.paymentAmount.toLocaleString()}</p>
+          <p className="text-sm"><strong>New Account Balance:</strong> ₦{data.newAccountBalance && data.newAccountBalance.toLocaleString()}</p>
         </div>
-
-        <Link to="/user-dashboard">Go to DashBoard</Link>
-
-      <div className='sm:mx-auto sm:w-full max-w-screen-sm p-8 text-sm  text-[#333333] dark:text-[#cccccc]'>
-        <p>Millenco Coop</p>
-        <p>No 13, Lagos Street,Ikeja, Lagos State</p>
-        <p><strong>Payment Type:</strong> {data.paymentType}</p>
-        <p><strong>Transaction Ref:</strong> {data.ref}</p>
-        <p><strong>User Name:</strong> {data.userName}</p>
-        <p><strong>Email:</strong> {data.email}</p>
-        <p><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleDateString()} [{paymentTime}]</p>
-        <p><strong>Payment Amount:</strong> ₦{data.paymentAmount}</p>
-        <p><strong>New Account Balance:</strong> ₦{data.newAccountBalance}</p>
-      </div>
+        <Link to="/user-dashboard" className="block mt-6 text-sm text-blue-600 hover:underline">Go to Dashboard</Link>
       </div>
     </div>
   );

@@ -126,8 +126,8 @@ const handleChange = (e) => {
         {/* Toggle */}
         <div className="flex justify-center mb-6">
           <div className="relative flex w-full p-1 bg-gray-50 rounded">
-          <button className={`relative flex-1 text-sm font-medium p-1 transition duration-150 ease-in-out focus:outline-none focus-visible:ring-2 ${tab === "card" ? "border text-white bg-slate-950" : ""}`} onClick={() => { setTab("card") }}>Pay With Card</button>
-            <button className={`relative flex-1 text-sm font-medium p-1 transition duration-150 ease-in-out focus:outline-none focus-visible:ring-2 ${tab === "stripe" ? "border text-white bg-slate-950" : ""}`} onClick={() => { setTab("stripe") }}>Pay With Stripe</button>
+          <button className={`relative flex-1 text-sm font-medium p-1 transition duration-150 ease-in-out focus:outline-none focus-visible:ring-2 ${tab === "card" ? "border text-white bg-indigo-500" : ""}`} onClick={() => { setTab("card") }}>Pay With Card</button>
+            <button className={`relative flex-1 text-sm font-medium p-1 transition duration-150 ease-in-out focus:outline-none focus-visible:ring-2 ${tab === "stripe" ? "border text-white bg-indigo-500" : ""}`} onClick={() => { setTab("stripe") }}>Pay With Stripe</button>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ const handleChange = (e) => {
             {/* Form footer */}
             <div className="mt-6">
               <div className="mb-4">
-                <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" name='paymentAmount' type='submit'>{isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount : state.loanRepayPerMonth}`}</button>
+                <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" name='paymentAmount' type='submit'>{isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount.toLocaleString() : state.loanRepayPerMonth.toLocaleString()}`}</button>
               </div>
             </div>
           </form>
@@ -175,7 +175,7 @@ const handleChange = (e) => {
           <form onSubmit={stripePayment}>
               <div className="mb-4">
                   <button className="font-medium text-sm inline-flex items-center justify-center px-3 py-2 border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out w-full bg-indigo-500 hover:bg-indigo-600 text-white focus:outline-none focus-visible:ring-2" type='submit'>
-                    {isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount : state.loanRepayPerMonth}`}</button>
+                    {isLoading ? 'Paying...' : `Pay ₦${state.paymentType === 'deposit' ? state.depositAmount.toLocaleString() : state.loanRepayPerMonth.toLocaleString()}`}</button>
               </div>
           </form>
         }

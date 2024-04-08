@@ -125,12 +125,12 @@ export default function LoanApplicationPage() {
       </div>
       {data.dateRegistered && monthsUsed < 6 ? (
         <div className='flex justify-center items-center flex-col gap-3 my-4'>
-            <p>You must be a member for at least 6 months to apply for a loan.</p>
+            <p className='font-bold'>You must be a member for at least 6 months to apply for a loan.</p>
             <button className='border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>{isOldMemberLoading ? 'Loading...' : 'Make Old Member'}</button>
         </div>
       ) : (
           data.loanPayment > 0 ? (
-              <p>Sorry, you already have an existing loan.</p>
+              <p className='text-[#388E3C] dark:text-[#ff6f00] font-bold'>Sorry, you already have an existing loan.</p>
           ) : (
               <div className="mt-5 text-sm font-medium">
                   <form className='space-y-6' onSubmit={loanApplication}>

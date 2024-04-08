@@ -163,13 +163,13 @@ export default function DepositPage() {
           {data.dateRegistered && monthsUsed < 6  ?
             <button className=' mx-auto my-4 border-double border-4 bg-[#E8F5E9] dark:bg-[#1A1A1A] px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-40' onClick={makeUserOldMember}>{isOldMemberLoading ? 'Loading...' : 'Make Old Member'}</button> 
           : data.loanPayment === 0 ?
-          <div className='m-auto'>
+          <div className='m-auto text-[#388E3C] dark:text-[#ff6f00] font-bold'>
             <p>You currently have no loan to repay</p>
             <Link to="/user-dashboard/apply-loan" className='underline'>Go to Loan Application</Link>
           </div>
           :
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm text-sm font-medium">
-            <p className='text-center italic'>Loan Repay Per Month ₦{data.loanRepayPerMonth}</p>
+            <p className='text-center italic text-[#388E3C] dark:text-[#ff6f00]'>Loan Repay Per Month ₦{data.loanRepayPerMonth.toLocaleString()}</p>
             <form className='space-y-6'>
               <fieldset className='space-y-6'>
                 <legend>Loan Repayment</legend>

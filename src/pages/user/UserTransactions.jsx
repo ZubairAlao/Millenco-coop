@@ -38,14 +38,14 @@ export default function UserTransactions() {
       </div>
 
       {tab === 'payment' ?
-        <ul className='mt-6'>
+        <ul className='mt-6 overflow-auto max-h-[600px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
           {data.paymentHistory ? (
             data.paymentHistory.length > 0 ? (
               data.paymentHistory.slice().reverse().map((transaction, index) => (
                 <Link to={`payment/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Amount: ₦{transaction.paymentAmount}</div>
+                  <div className='ml-auto'>Amount: ₦{transaction.paymentAmount.toLocaleString()}</div>
                 </Link>
               ))
             ) : (
@@ -58,14 +58,14 @@ export default function UserTransactions() {
       : null}
 
       {tab === 'loan' ?
-        <ul className='mt-6'>
+        <ul className='mt-6 overflow-auto max-h-[600px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
           {data.loanHistory ? (
             data.loanHistory.length > 0 ? (
               data.loanHistory.slice().reverse().map((transaction, index) => (
                 <Link to={`loan/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Amount: ₦{transaction.loanValue}</div>
+                  <div className='ml-auto'>Loan Amount: ₦{transaction.loanValue.toLocaleString()}</div>
                 </Link>
               ))
             ) : (
@@ -78,14 +78,14 @@ export default function UserTransactions() {
       : null}
 
       {tab === 'loan-repay' ?
-        <ul className='mt-6'>
+        <ul className='mt-6 overflow-auto max-h-[600px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'>
           {data.loanRepayHistory ? (
             data.loanRepayHistory.length > 0 ? (
               data.loanRepayHistory.slice().reverse().map((transaction, index) => (
                 <Link to={`loan-repay/${transaction.ref}`} key={index} className='flex gap-3 p-4 bg-gray-100 odd:bg-gray-200 dark:bg-gray-900 dark:odd:bg-gray-800'>
                   <p>{transaction.paymentType}</p>
                   <div>Date: {new Date(transaction.paymentDate).toLocaleDateString()} {new Date(transaction.paymentDate).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-                  <div className='ml-auto'>Loan Repay Amount: ₦{transaction.loanRepayPerMonth}</div>
+                  <div className='ml-auto'>Loan Repay Amount: ₦{transaction.loanRepayPerMonth.toLocaleString()}</div>
                 </Link>
               ))
             ) : (
