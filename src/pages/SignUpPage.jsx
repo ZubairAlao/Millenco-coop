@@ -59,7 +59,7 @@ export default function SignUpPage() {
             const userId = auth.currentUser.uid;
             console.log(userId)
             await addUserToFirestore(userId, userData)
-            updateProfile(auth.currentUser, {
+            await updateProfile(auth.currentUser, {
                 displayName: registrationData.userName
               })
             navigate('/');

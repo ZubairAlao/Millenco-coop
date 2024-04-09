@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import { Link, useNavigate, } from 'react-router-dom'
 import { auth } from "../services/firebase"
-import {  signInWithEmailAndPassword   } from 'firebase/auth';
+import {  signInWithEmailAndPassword, sendPasswordResetEmail   } from 'firebase/auth';
 
 export default function LoginPage() {
 
@@ -17,6 +17,27 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+
+    async function handleForgotPassword(email) {
+        if (!email) {
+            setLoginError("Please enter your email address.");
+            return;
+        }
+        setForgotPasswordLoading(true)
+        setLoginError(null);
+        try {
+          await sendPasswordResetEmail(auth, email)
+          setLoginError('A password reset email has been sent.')
+        } catch (error) {
+          console.error("Error sending password reset email:", error.message);
+          setLoginError(error);
+        }
+        finally{
+            setForgotPasswordLoading(false);
+        }
+      }
+
 
     const onLogin = (e) => {
         e.preventDefault();
@@ -93,7 +114,7 @@ export default function LoginPage() {
                                     Password
                                 </span>
                             </label>
-                            <Link to='#' className='text-red-500 hover:text-red-300'>Forgot Password?</Link>
+                            <p className='text-red-500 hover:text-red-300 cursor-pointer' onClick={() => handleForgotPassword(email)}>{forgotPasswordLoading ? "sending Mail" : "Forgot Password?"}</p>
                         </div>
                         <input type="password" name="password" id="password" required autoComplete="current-password" onChange={(e)=>setPassword(e.target.value)}/>
                     </div>

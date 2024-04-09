@@ -4,12 +4,14 @@ import { auth } from '../../services/firebase';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {updateProfileData} from '../../services/firebase';
 import {uploadImageToFirebase} from '../../services/firebase';
-import { updateProfile } from 'firebase/auth';
+import { updateProfile, updateEmail, deleteUser } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function UserProfile() {
 
   const queryClient = useQueryClient()
+  const navigate = useNavigate();
 
   const [userName, setUserName] = useState('');
   const [userNameEdit, setUserNameEdit] = useState(false);
@@ -32,6 +34,8 @@ export default function UserProfile() {
   const [imageEdit, setImageEdit] = useState(false);
   const [image, setImage] = useState(null);
 
+  const [deleteUserLoading, setDeleteUserLoading] = useState(null);
+
   console.log(auth.currentUser);
 
   const saveProfile = async () => {
@@ -39,10 +43,14 @@ export default function UserProfile() {
       // Update each field individually
       if (userNameEdit) {
         await updateProfileData(auth.currentUser.uid, { userName : userName });
+        await updateProfile(auth.currentUser, {
+          displayName: userName
+        })
         setUserNameEdit(false);
       }
       if (emailEdit) {
         await updateProfileData(auth.currentUser.uid, { email: email });
+        // await updateEmail(auth.currentUser, email)
         setEmailEdit(false);
       }
       if (referralNameEdit) {
@@ -85,7 +93,18 @@ export default function UserProfile() {
     }
   };
 
-
+  async function handleDeleteUser() {
+    setDeleteUserLoading(true)
+    try {
+      await deleteUser(auth.currentUser)
+      navigate("/")
+    } catch (error) {
+      console.error("Error sending password reset email:", error.message);
+    }
+    finally{
+        setDeleteUserLoading(false);
+    }
+  }
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
@@ -136,7 +155,7 @@ export default function UserProfile() {
           </div>
         </div>
 
-        <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
+        {/* <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Email Address</p>
             <p><span className="font-bold">Email:</span> {emailEdit ? <input type="text" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"/> : data.email}</p>
@@ -151,7 +170,7 @@ export default function UserProfile() {
               </button> : null
             } 
           </div>
-        </div>
+        </div> */}
 
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
@@ -221,24 +240,20 @@ export default function UserProfile() {
             <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setReferralNameEdit(!referralNameEdit); if (referralNameEdit) {saveProfile();}}}>
               {referralNameEdit ? 'Save' : 'Edit'}
             </button>
-            {referralNameEdit ? 
+            {referralNameEdit ?
               <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setReferralNameEdit(!referralNameEdit)}>
                 cancel
               </button> : null
             } 
           </div>
         </div>
+
+        {/* <div className='mx-auto'>
+          <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300 inline"  onClick={handleDeleteUser}>
+              {deleteUserLoading ? "Deleting user..." : "Delete Account"}
+          </button>
+        </div> */}
       </div>
     </div>
   )
 }
-
-// Utilizes the Header, UserDashboard, and Footer components.
-//     May include additional components for displaying account information and transaction history.
-// Displays a personalized dashboard for the logged-in user.
-//     Shows user-specific information like account balance, recent transactions,
-
-//  account settings h3
-// avatar
-// profile setting
-// name phone email password new password
