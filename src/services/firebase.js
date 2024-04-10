@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {getFirestore, doc, getDoc, collection, setDoc, addDoc, updateDoc, arrayUnion} from "firebase/firestore"
+import {getFirestore, doc, getDoc, collection, setDoc, addDoc, updateDoc, arrayUnion, deleteDoc} from "firebase/firestore"
 
 const firebaseConfig = {
     apiKey: "AIzaSyAbVzUXRgMYXSJHrLjbMA-S9H49OMPlXLc",
@@ -35,6 +35,18 @@ export const addUserToFirestore = async (userId, profileData) => {
     console.log('User added');
   } catch (error) {
     console.error('Error adding user to Firestore:', error);
+  }
+};
+
+export const deleteUserFromFirestore = async (userId) => {
+  try {
+
+    const usersCollectionRef = collection(db, 'users');
+    const userDocRef = doc(usersCollectionRef, userId);
+    await deleteDoc(userDocRef);
+    console.log('User deleted');
+  } catch (error) {
+    console.error('Error deleting user from Firestore:', error);
   }
 };
 

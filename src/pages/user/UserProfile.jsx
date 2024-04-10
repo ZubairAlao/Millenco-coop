@@ -3,9 +3,10 @@ import { getProfileData } from '../../services/firebase';
 import { auth } from '../../services/firebase';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {updateProfileData} from '../../services/firebase';
-import {uploadImageToFirebase} from '../../services/firebase';
-import { updateProfile, updateEmail, deleteUser } from 'firebase/auth';
+import {uploadImageToFirebase, deleteUserFromFirestore} from '../../services/firebase';
+import { updateProfile, updateEmail, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+
 
 
 export default function UserProfile() {
@@ -34,9 +35,13 @@ export default function UserProfile() {
   const [imageEdit, setImageEdit] = useState(false);
   const [image, setImage] = useState(null);
 
-  const [deleteUserLoading, setDeleteUserLoading] = useState(null);
+  const [deleteUserDialogBox, setDeleteUserDialogBox] = useState(false);
+  const [deleteUserLoading, setDeleteUserLoading] = useState(false);
+  const [deleteUserEmail, setDeleteUserEmail] = useState('');
+  const [deleteUserPassword, setDeleteUserPassword] = useState('');
+  const [deleteUserUserError, setDeleteUserUserError] = useState(null);
 
-  console.log(auth.currentUser);
+  console.log("auth", auth.currentUser);
 
   const saveProfile = async () => {
     try {
@@ -95,22 +100,28 @@ export default function UserProfile() {
 
   async function handleDeleteUser() {
     setDeleteUserLoading(true)
+    setDeleteUserUserError(null)
     try {
+      const userId = auth.currentUser.uid;
+      const credential = EmailAuthProvider.credential(deleteUserEmail, deleteUserPassword);
+      await reauthenticateWithCredential(auth.currentUser, credential)
+      await deleteUserFromFirestore(userId)
       await deleteUser(auth.currentUser)
       navigate("/")
     } catch (error) {
-      console.error("Error sending password reset email:", error.message);
+      setDeleteUserUserError("Error: Check Password and Email", error.message)
+      console.error("Error deleting user, check password:", error.message);
     }
     finally{
         setDeleteUserLoading(false);
     }
   }
-
+  console.log("credential" , deleteUserEmail, deleteUserPassword);
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
     queryFn: async () => {
       const userId = auth.currentUser.uid;
-      return await getProfileData(userId);p
+      return await getProfileData(userId);
     }
   })
 
@@ -125,18 +136,17 @@ export default function UserProfile() {
   if (isError) {
     return <span>Error: {error.message}</span>
   }
-  // console.log(data);
   return (
     <div className="sm:mx-auto sm:w-full max-w-screen-xl px-8 text-sm">
       <h1 className="text-2xl text-center font-bold mb-4">User Profile</h1>
-      <div className='grid gap-2'>
-      <div className='flex justify-center items-center gap-4'>
-      <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
-        {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
-        <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
-          {imageEdit ? 'Save' : 'Edit'}
-        </button>
-      </div>
+      <div className='grid gap-2 relative'>
+        <div className='flex justify-center items-center gap-4'>
+        <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
+          {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
+          <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
+            {imageEdit ? 'Save' : 'Edit'}
+          </button>
+        </div>
 
         <div className='flex items-center justify-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
@@ -248,11 +258,49 @@ export default function UserProfile() {
           </div>
         </div>
 
-        {/* <div className='mx-auto'>
-          <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300 inline"  onClick={handleDeleteUser}>
-              {deleteUserLoading ? "Deleting user..." : "Delete Account"}
+        <div className='mx-auto'>
+          <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300 inline"  onClick={() => setDeleteUserDialogBox(true)}>
+              Delete Account
           </button>
-        </div> */}
+        </div>
+
+        {deleteUserDialogBox && (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center overflow-hidden">
+            <div className="bg-[#C8E6C9] dark:bg-[#37474F] p-8 rounded-md shadow-md border border-[#388E3C] dark:border-[#ff6f00]">
+              <p className="text-lg font-semibold mb-2">Are you sure you want to delete your account?</p>
+              <form className='' >
+                {deleteUserUserError && <p>{deleteUserUserError}</p>}
+                <fieldset className='space-y-6'>
+                    <div>
+                        <label htmlFor="email">
+                            <span className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                                Email
+                            </span>
+                        </label>
+                        <input type="email" id='email' name="email" required  autoComplete="email" onChange={(e)=>setDeleteUserEmail(e.target.value)}/>
+                    </div>
+                    
+                    <div>
+                        <div className='flex items-center justify-between'>
+                            <label htmlFor="password">
+                                <span className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                                    Password
+                                </span>
+                            </label>
+                        </div>
+                        <input type="password" name="password" id="password" required autoComplete="current-password" onChange={(e)=>setDeleteUserPassword(e.target.value)}/>
+                    </div>
+                  </fieldset>
+              </form>
+              <div className="flex justify-center mt-4">
+                <button className="bg-red-500 text-white px-4 py-2 rounded-md mr-4" onClick={handleDeleteUser}>{deleteUserLoading ? "Deleting..." : "Delete"}</button>
+                <button className="bg-gray-300 px-4 py-2 rounded-md text-[#333]" onClick={() => setDeleteUserDialogBox(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
       </div>
     </div>
   )

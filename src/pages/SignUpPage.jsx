@@ -209,7 +209,7 @@ export default function SignUpPage() {
 
                     <div className='flex justify-center'>
                         <button type='submit' className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300 w-36" disabled={isLoading}>
-                        {isLoading ? 'Resgistering...' : 'Register'}
+                        {isLoading ? 'Registering...' : 'Register'}
                         </button>
                     </div>
                 </fieldset>
