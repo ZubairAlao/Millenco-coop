@@ -46,14 +46,14 @@ export default function Services( {paddingTop} ) {
             <motion.div className="flex flex-col lg:flex-row space-y-12 lg:space-y-0 md:items-center" key={benefit.heading}
               initial={{
                 opacity: 0,
-                x: index % 2 === 0 ? -50 : 50
+                // x: index % 2 === 0 ? -50 : 50
               }}
               whileInView={{
                 opacity: 1,
-                x: 0,
+                // x: 0,
                 transition: {
-                  duration: 0.5,
-                  delay: 0.5 * index
+                  duration: 0.3,
+                  delay: 0.3 * index
                 }
               }}
             >

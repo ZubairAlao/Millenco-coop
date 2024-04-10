@@ -140,3 +140,15 @@ export const addLoanRepayToFirestore = async (userId, payment) => {
     throw error;
   }
 };
+
+export const addContactUsToFirestore = async (contactId, messageData) => {
+  try {
+    const contactCollectionRef = collection(db, 'contact_us');
+    
+    await setDoc(doc(contactCollectionRef, contactId), messageData);
+
+    console.log('message added');
+  } catch (error) {
+    console.error('Error adding message to Firestore:', error);
+  }
+};

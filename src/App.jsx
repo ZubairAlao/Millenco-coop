@@ -28,6 +28,7 @@ import { PaymentSuccessPage } from "./pages/PaymentSuccessPage"
 import UserTransactionsDetails from "./pages/user/UserTransactionsDetails"
 import { LoanSuccessPage } from "./pages/LoanSuccessPage"
 import { LoanRepaySuccessPage } from "./pages/LoanRepaySuccessPage"
+import ContactDetails from "./components/ContactDetails"
 
 
 
@@ -104,6 +105,12 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route  
       path="loan-payment-success"
       element={<LoanRepaySuccessPage />}
+      errorElement={<Error />}
+    />
+
+    <Route  
+      path="contact-media"
+      element={<ContactDetails />}
       errorElement={<Error />}
     />
 

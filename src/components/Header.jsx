@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun, faUser, faMoneyBill, faHandHoldingUsd, faEdit, faSignOutAlt, faBell,faChartBar  } from '@fortawesome/free-solid-svg-icons';
 import { faBars, faTimes,  } from '@fortawesome/free-solid-svg-icons';
-import { Ref } from 'react';
 import { auth } from "../services/firebase";
 import {signOut} from 'firebase/auth'
 import { getProfileData } from '../services/firebase';
@@ -48,7 +47,44 @@ export default function Header() {
   const [darkMode, setDarkMode] = useState(undefined)
   const [isDropDown, setIsDropDown] = useState(false);
   const [isProfile, setIsProfile] = useState(false);
-  const outsideDropDown = useRef(null)
+
+  const navbarButtonRef = useRef(null)
+  const dropDownButtonRef = useRef(null)
+  const profileButtonRef = useRef(null)
+  
+  const navbarWrapperRef = useRef(null)
+  const dropDownWrapperRef = useRef(null)
+  const profileWrapperRef = useRef(null)
+
+  const handleOutsideClick = (event) => {
+    if (
+      navbarWrapperRef.current &&
+      !navbarWrapperRef.current.contains(event.target) &&
+      event.target !== navbarButtonRef.current
+    ) {
+      setIsMenuOpen(false);
+    }if (
+      dropDownWrapperRef.current &&
+      !dropDownWrapperRef.current.contains(event.target) &&
+      event.target !== dropDownButtonRef.current
+    ) {
+      setIsDropDown(false);
+    }
+    if (
+      profileWrapperRef.current &&
+      !profileWrapperRef.current.contains(event.target) &&
+      event.target !== profileButtonRef.current
+    ) {
+      setIsProfile(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -101,6 +137,7 @@ export default function Header() {
           <button
             className="text-black dark:text-white hover:opacity-80 md:hidden"
             onClick={toggleMenu}
+            ref={navbarButtonRef}
           >
             <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} className="h-7 w-7" />
           </button>
@@ -115,10 +152,10 @@ export default function Header() {
             {navLinks.map((link) => (
               <li key={link.text}>
                 {link.children ? (
-                  <div className="relative flex gap-1 items-center" onClick={toggleDropDown}>
+                  <div className="relative flex gap-1 items-center">
                     <div
                       className={"hover:text-[#388E3C] dark:hover:text-[#FF6F00] duration-300 ease-in-out cursor-pointer"}
-                      to={link.url}
+                      to={link.url} onClick={toggleDropDown} ref={dropDownButtonRef}
                     >
                       {link.text}
                     </div>
@@ -136,7 +173,7 @@ export default function Header() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <ul className={`absolute left-0 dark:bg-[#1A1A1A] bg-[#E8F5E9] shadow-md p-4 w-36 transition rounded-md flex flex-col ring-1 ring-black dark:ring-[#FF6F00] ring-opacity-5 dark:ring-opacity-25 focus:outline-none space-y-2 ${isDropDown ? 'opacity-100 visible top-7' : 'opacity-0 invisible'}`}>
+                    <ul className={`absolute left-0 dark:bg-[#1A1A1A] bg-[#E8F5E9] shadow-md p-4 w-36 transition rounded-md flex flex-col ring-1 ring-black dark:ring-[#FF6F00] ring-opacity-5 dark:ring-opacity-25 focus:outline-none space-y-2 ${isDropDown ? 'opacity-100 visible top-7' : 'opacity-0 invisible'}`} ref={dropDownWrapperRef}>
                       {link.children.map(child => (
                         <li key={child.text}>
                           <NavLink
@@ -169,6 +206,7 @@ export default function Header() {
                 : 'absolute ease-in-out duration-500 top-[65px] left-[-100%]'
               }
             `}
+            ref={navbarWrapperRef}
             >
             <ul className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 text-base h-screen'>
               <li
@@ -215,9 +253,9 @@ export default function Header() {
               >
                 <FontAwesomeIcon icon={faBell} className="h-7 w-7" />
               </Link>
-              <div className='h-8 w-8 rounded-full bg-slate-300 cursor-pointer' style={{backgroundImage: `url(${auth.currentUser.photoURL})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}} onClick={toggleProfile}></div>
+              <div ref={profileButtonRef} className='h-8 w-8 rounded-full bg-slate-300 cursor-pointer' style={{backgroundImage: `url(${auth.currentUser.photoURL})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}} onClick={toggleProfile}></div>
               {isProfile && (
-                <div className="absolute top-[55px] right-0 bg-white dark:bg-gray-800 w-44 shadow-lg rounded-md">
+                <div className="absolute top-[55px] right-0 bg-white dark:bg-gray-800 w-44 shadow-lg rounded-md" ref={profileWrapperRef} >
                   
                   <div className="py-1">
                   <div
