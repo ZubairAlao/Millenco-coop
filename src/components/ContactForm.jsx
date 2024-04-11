@@ -33,9 +33,19 @@ export default function ContactForm() {
     
       try {
         await addContactUsToFirestore(contactId, contactData);
-        navigate('/contact-media');
+        navigate(`/contact/${contactId}`);
       } catch (error) {
-        setContactError(error.message);
+        const errorCode = error.code;
+        let errorMessage = error.message;
+        
+        switch (errorCode) {
+          case 'auth/network-request-failed':
+              errorMessage = 'You are not online';
+              break;
+          default:
+              errorMessage = 'An error occurred. Please try again.';
+      }
+        setContactError(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -44,7 +54,7 @@ export default function ContactForm() {
     console.log(contactData);
   return (
     <div>
-      <form className='text-sm font-medium mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+      <form className='text-sm font-medium mt-4 sm:mx-auto sm:w-full sm:max-w-sm'>
       {contactError && <p className="text-red-500">{contactError}</p>}
         <fieldset className='space-y-6'>
           <div>

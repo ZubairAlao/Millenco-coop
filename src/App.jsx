@@ -68,6 +68,12 @@ const router = createBrowserRouter(createRoutesFromElements(
   />
 
   <Route  
+    path="contact/:contactId"
+    element={<ContactDetails />}
+    errorElement={<Error />}
+  />
+
+  <Route  
     path="login"
     element={<LoginPage />}
     errorElement={<Error />}
@@ -105,12 +111,6 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route  
       path="loan-payment-success"
       element={<LoanRepaySuccessPage />}
-      errorElement={<Error />}
-    />
-
-    <Route  
-      path="contact-media"
-      element={<ContactDetails />}
       errorElement={<Error />}
     />
 

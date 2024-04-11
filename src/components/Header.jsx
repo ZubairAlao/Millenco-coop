@@ -9,7 +9,6 @@ import { getProfileData } from '../services/firebase';
 import { useQuery } from '@tanstack/react-query'
 
 
-
 export default function Header() {
   const navLinks = [
     { url: 'about', text: 'About' },
@@ -132,7 +131,7 @@ export default function Header() {
 
   return (
     <header className='fixed top-0 left-0 right-0 text-[#333333] bg-[#E8F5E9] dark:text-[#cccccc] dark:bg-[#1A1A1A] z-50 shadow-md'>
-      <div className='flex max-w-screen-xl mx-auto items-center justify-between relative py-4 px-8'>
+      <div className='flex max-w-screen-xl mx-auto items-center justify-between relative py-4 px-8' ref={navbarWrapperRef}>
 
           <button
             className="text-black dark:text-white hover:opacity-80 md:hidden"
@@ -206,7 +205,6 @@ export default function Header() {
                 : 'absolute ease-in-out duration-500 top-[65px] left-[-100%]'
               }
             `}
-            ref={navbarWrapperRef}
             >
             <ul className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 text-base h-screen'>
               <li

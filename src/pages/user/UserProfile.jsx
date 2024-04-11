@@ -78,16 +78,15 @@ export default function UserProfile() {
       }
 
       if (imageEdit && image) {
-        const imageUrl = await uploadImageToFirebase(image);
+        const imageUrl = await uploadImageToFirebase(auth.currentUser.uid, image);
         if (imageUrl) {
-          await updateProfileData(auth.currentUser.uid, { imageUrl: imageUrl });
+          // await updateProfileData(auth.currentUser.uid, { imageUrl: imageUrl });
           await updateProfile(auth.currentUser, {
             photoURL: imageUrl
           })
           setImageEdit(false);
         } else {
           console.error('Image URL is undefined');
-          // Handle the case where imageUrl is undefined, e.g., display an error message
         }
       }
       // Reset image state
@@ -109,8 +108,29 @@ export default function UserProfile() {
       await deleteUser(auth.currentUser)
       navigate("/")
     } catch (error) {
-      setDeleteUserUserError("Error: Check Password and Email", error.message)
-      console.error("Error deleting user, check password:", error.message);
+        const errorCode = error.code;
+        let errorMessage = error.message;
+        
+        switch (errorCode) {
+          case 'auth/network-request-failed':
+            errorMessage = 'Error deleting user: Network request failed. Please check your internet connection and try again.';
+            break;
+            case 'auth/user-not-found':
+                errorMessage = 'Error deleting user: User not found.';
+                break;
+            case 'auth/requires-recent-login':
+                errorMessage = 'Error deleting user: This operation requires the user to have recently logged in. Please log in again and try again.';
+                break;
+            case 'auth/weak-password':
+                errorMessage = 'Error deleting user: Weak password. Please provide a stronger password.';
+                break;
+            case 'auth/invalid-user-token':
+                errorMessage = 'Error deleting user: Invalid user token. Please try again later.';
+                break;
+          default:
+              errorMessage = 'Error: Check Password and Email.';
+      }
+      setDeleteUserUserError(errorMessage)
     }
     finally{
         setDeleteUserLoading(false);
@@ -120,7 +140,7 @@ export default function UserProfile() {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
     queryFn: async () => {
-      const userId = auth.currentUser.uid;
+      const userId = auth.currentUser?.uid;
       return await getProfileData(userId);
     }
   })
@@ -141,7 +161,7 @@ export default function UserProfile() {
       <h1 className="text-2xl text-center font-bold mb-4">User Profile</h1>
       <div className='grid gap-2 relative'>
         <div className='flex justify-center items-center gap-4'>
-        <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
+        <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.photoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
           {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
           <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
             {imageEdit ? 'Save' : 'Edit'}

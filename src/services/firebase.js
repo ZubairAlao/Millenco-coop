@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import {getFirestore, doc, getDoc, collection, setDoc, addDoc, updateDoc, arrayUnion, deleteDoc} from "firebase/firestore"
 
 const firebaseConfig = {
@@ -58,7 +58,6 @@ export const getProfileData = async (userId) => {
     if (docSnap.exists()) {
       const profileData = docSnap.data()
       return profileData
-      // console.log("Current data:", docSnap.data());
     } else {
       console.log("No such document!");
     }
@@ -80,15 +79,66 @@ export const updateProfileData = async (userId, updateNewData) => {
   }
 }
 
-export const uploadImageToFirebase = async (file) => {
+// export const uploadImageToFirebase = async (file) => {
+//   try {
+//     const imageRef = ref(storage, `images/${file.name}`);
+//     const uploadImg = uploadBytes(imageRef, file);
+//     const snapshot = await uploadImg;
+//     const downloadURL = await getDownloadURL(snapshot.ref);
+//     return downloadURL;
+//   } catch (error) {
+//     console.error('Error uploading image to Firebase:', error);
+//     throw error;
+//   }
+// };
+
+export const uploadImageToFirebase = async (userId, file) => {
   try {
+    // Check if the user already has an image stored
+    const docRef = doc(db, 'users', userId);
+    const docSnap = await getDoc(docRef);
+
+    let oldPhotoUrl = null;
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      oldPhotoUrl = userData.photoUrl;
+      if (oldPhotoUrl) {
+        // Delete the existing image from Firestore Storage
+        await deleteImageFromFirebase(oldPhotoUrl);
+      }
+    }
+
+    // Upload the new image to Firestore Storage
     const imageRef = ref(storage, `images/${file.name}`);
     const uploadImg = uploadBytes(imageRef, file);
-    const snapshot = await uploadImg; // Wait for the upload task to complete
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    return downloadURL;
+    const snapshot = await uploadImg;
+
+    // Get the download URL of the uploaded file
+    const newPhotoUrl = await getDownloadURL(snapshot.ref);
+
+    // Update the Firestore document with the new image URL
+    await setDoc(docRef, { photoUrl: newPhotoUrl }, { merge: true });
+
+    return newPhotoUrl;
   } catch (error) {
-    console.error('Error uploading image to Firebase:', error);
+    console.error("Error uploading image to Firebase:", error);
+    throw error;
+  }
+};
+
+export const deleteImageFromFirebase = async (photoUrl) => {
+  try {
+    // Parse the photo URL to extract the file path
+    const filePath = new URL(photoUrl);
+
+    // Create a reference to the file in Firebase Storage
+    const fileRef = ref(storage, filePath);
+
+    // Delete the file
+    await deleteObject(fileRef);
+    console.log("File deleted successfully");
+  } catch (error) {
+    console.error("Error deleting image from Firebase:", error);
     throw error;
   }
 };
@@ -152,3 +202,20 @@ export const addContactUsToFirestore = async (contactId, messageData) => {
     console.error('Error adding message to Firestore:', error);
   }
 };
+
+export const getContactData = async (contactId) => {
+  try {
+    const docRef = doc(db, "contact_us", contactId);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const contactData = docSnap.data()
+      return contactData
+    } else {
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.error('Error geting contact from Firestore: ', error);
+    throw error;
+  }
+}
