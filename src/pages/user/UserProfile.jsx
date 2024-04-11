@@ -4,6 +4,7 @@ import { auth } from '../../services/firebase';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {updateProfileData} from '../../services/firebase';
 import {uploadImageToFirebase, deleteUserFromFirestore} from '../../services/firebase';
+import { deleteImageFromFirebase } from '../../services/firebase';
 import { updateProfile, updateEmail, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -105,6 +106,7 @@ export default function UserProfile() {
       const credential = EmailAuthProvider.credential(deleteUserEmail, deleteUserPassword);
       await reauthenticateWithCredential(auth.currentUser, credential)
       await deleteUserFromFirestore(userId)
+      await deleteImageFromFirebase(auth.currentUser.photoURL)
       await deleteUser(auth.currentUser)
       navigate("/")
     } catch (error) {
