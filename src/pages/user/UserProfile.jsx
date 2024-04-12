@@ -36,7 +36,7 @@ export default function UserProfile() {
   const [imageEdit, setImageEdit] = useState(false);
   const [image, setImage] = useState(null);
 
-  const [saveProfileLoading, setSaveProfileLoading] = useState(false);
+  const [saveImageLoading, setSaveImageLoading] = useState(false);
 
   const [deleteUserDialogBox, setDeleteUserDialogBox] = useState(false);
   const [deleteUserLoading, setDeleteUserLoading] = useState(false);
@@ -48,7 +48,6 @@ export default function UserProfile() {
 
   const saveProfile = async () => {
     try {
-      setSaveProfileLoading(true)
       // Update each field individually
       if (userNameEdit) {
         await updateProfileData(auth.currentUser.uid, { userName : userName });
@@ -82,6 +81,7 @@ export default function UserProfile() {
       }
 
       if (imageEdit && image) {
+        setSaveImageLoading(true)
         const imageUrl = await uploadImageToFirebase(auth.currentUser.uid, image);
         if (imageUrl) {
           // await updateProfileData(auth.currentUser.uid, { imageUrl: imageUrl });
@@ -99,8 +99,8 @@ export default function UserProfile() {
     } catch (error) {
       console.error('Error updating user profile:', error);
     } finally {
-      setSaveProfileLoading(false);
-  }
+      setSaveImageLoading(false);
+    }
   };
 
   async function handleDeleteUser() {
@@ -167,10 +167,10 @@ export default function UserProfile() {
     <div className="sm:mx-auto sm:w-full max-w-screen-xl px-8 text-sm">
       <h1 className="text-2xl text-center font-bold mb-4">User Profile</h1>
       <div className='grid gap-2 relative'>
-        <div className='flex justify-center items-center gap-4'>
+        <div className='flex  flex-col justify-center items-center gap-4'>
         <div 
-            className={`bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00] ${saveProfileLoading ? 'animate-pulse' : ''}`}
-            style={{ backgroundImage: `url(${saveProfileLoading ? '' : data.photoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> 
+            className={`bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-slate-300 ${saveImageLoading ? 'animate-pulse' : ''}`}
+            style={{ backgroundImage: `url(${saveImageLoading ? '' : data.photoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> 
         </div>
           {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
           <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
@@ -181,14 +181,13 @@ export default function UserProfile() {
         <div className='flex items-center justify-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Personal Information</p>
-            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName} onChange={(e) => setUserName(e.target.value)} required/> : data.userName} 
-            {saveProfileLoading ? <span className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></span> : null }
+            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName ? userName : data.userName} onChange={(e) => setUserName(e.target.value)} required/> : data.userName}
             </p>
           </div>
           <div className='ml-auto'>
-            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
+            {userName.length > 5 && <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
               {userNameEdit ? 'Save' : 'Edit'}
-            </button>
+            </button>}
             {userNameEdit ? 
               <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setUserNameEdit(!userNameEdit)}>
                 cancel
@@ -217,7 +216,7 @@ export default function UserProfile() {
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Address</p>
-            <p><span className="font-bold">Address:</span> {addressEdit ? <input type="text" name="address" id="address" value={address} onChange={(e) => setAddress(e.target.value)} required autoComplete="address"/> : data.address}</p>
+            <p><span className="font-bold">Address:</span> {addressEdit ? <input type="text" name="address" id="address" value={address ? address : data.address} onChange={(e) => setAddress(e.target.value)} required autoComplete="address"/> : data.address}</p>
           </div>
           <div className='ml-auto'>
             <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setAddressEdit(!addressEdit); if (addressEdit) {saveProfile();}}}>
@@ -236,8 +235,8 @@ export default function UserProfile() {
             <p className='text-base font-semibold'>Gender</p>
             <p><span className="font-bold">Gender:</span> 
               {genderEdit ? 
-              <select id='gender' name="gender" required autoComplete="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                <option disabled value="" selected>Select Gender</option>
+              <select id='gender' name="gender" required autoComplete="gender" value={gender ? gender : data.gender } onChange={(e) => setGender(e.target.value)}>
+                <option disabled value='' selected>Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="none">I prefer not to say</option>
@@ -259,7 +258,7 @@ export default function UserProfile() {
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Phone</p>
-            <p><span className="font-bold">Phone:</span> {phoneEdit ? <input type="text" name="phone" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required autoComplete="phone"/> : data.phone}</p>
+            <p><span className="font-bold">Phone:</span> {phoneEdit ? <input type="text" name="phone" id="phone" value={phone ? phone : data.phone} onChange={(e) => setPhone(e.target.value)} required autoComplete="phone"/> : data.phone}</p>
           </div>
           <div className='ml-auto'>
             <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setPhoneEdit(!phoneEdit); if (phoneEdit) {saveProfile();}}}>
@@ -276,7 +275,7 @@ export default function UserProfile() {
         <div className='flex items-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Referral Name</p>
-            <p><span className="font-bold">Referral:</span> {referralNameEdit ? <input type="text" name="plan" id="plan" value={referralName} onChange={(e) => setReferralName(e.target.value)} required autoComplete="plan"/> : data.referralName}</p>
+            <p><span className="font-bold">Referral:</span> {referralNameEdit ? <input type="text" name="plan" id="plan" value={referralName ? referralName : data.referralName} onChange={(e) => setReferralName(e.target.value)} required autoComplete="plan"/> : data.referralName}</p>
           </div>
           <div className='ml-auto'>
             <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setReferralNameEdit(!referralNameEdit); if (referralNameEdit) {saveProfile();}}}>
@@ -297,7 +296,7 @@ export default function UserProfile() {
         </div>
 
         {deleteUserDialogBox && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center overflow-hidden">
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center overflow-hidden px-8">
             <div className="bg-[#C8E6C9] dark:bg-[#37474F] p-8 rounded-md shadow-md border border-[#388E3C] dark:border-[#ff6f00]">
               <p className="text-lg font-semibold mb-2">Are you sure you want to delete your account?</p>
               <form className='' >

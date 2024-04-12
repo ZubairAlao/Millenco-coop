@@ -41,7 +41,7 @@ export default function UserTransactionsDetails() {
   }
 
   return (
-    <div className=''>
+    <div className='px-8'>
       <PrivateRoute />
       <Link to='/user-dashboard/user-transactions' className="flex items-center text-[#388E3C] dark:text-[#ff6f00] hover:opacity-70 mb-2">
         <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
