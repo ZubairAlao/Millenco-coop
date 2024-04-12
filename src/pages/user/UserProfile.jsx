@@ -36,6 +36,8 @@ export default function UserProfile() {
   const [imageEdit, setImageEdit] = useState(false);
   const [image, setImage] = useState(null);
 
+  const [saveProfileLoading, setSaveProfileLoading] = useState(false);
+
   const [deleteUserDialogBox, setDeleteUserDialogBox] = useState(false);
   const [deleteUserLoading, setDeleteUserLoading] = useState(false);
   const [deleteUserEmail, setDeleteUserEmail] = useState('');
@@ -46,6 +48,7 @@ export default function UserProfile() {
 
   const saveProfile = async () => {
     try {
+      setSaveProfileLoading(true)
       // Update each field individually
       if (userNameEdit) {
         await updateProfileData(auth.currentUser.uid, { userName : userName });
@@ -95,7 +98,9 @@ export default function UserProfile() {
       queryClient.invalidateQueries({ queryKey: ['profileData'] })
     } catch (error) {
       console.error('Error updating user profile:', error);
-    }
+    } finally {
+      setSaveProfileLoading(false);
+  }
   };
 
   async function handleDeleteUser() {
@@ -163,7 +168,10 @@ export default function UserProfile() {
       <h1 className="text-2xl text-center font-bold mb-4">User Profile</h1>
       <div className='grid gap-2 relative'>
         <div className='flex justify-center items-center gap-4'>
-        <div className="bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00]" style={{ backgroundImage: `url(${data.photoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> </div>
+        <div 
+            className={`bg-cover bg-center bg-no-repeat rounded-full h-40 w-40 bg-[#388E3C] dark:bg-[#ff6f00] ${saveProfileLoading ? 'animate-pulse' : ''}`}
+            style={{ backgroundImage: `url(${saveProfileLoading ? '' : data.photoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}> 
+        </div>
           {imageEdit ? <input type='file' onChange={(e) => setImage(e.target.files[0])} /> : null}
           <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setImageEdit(!imageEdit); if (imageEdit) {saveProfile();} }}>
             {imageEdit ? 'Save' : 'Edit'}
@@ -173,7 +181,9 @@ export default function UserProfile() {
         <div className='flex items-center justify-center border p-4 rounded-md border-[#388E3C] dark:border-[#ff6f00]'>
           <div>
             <p className='text-base font-semibold'>Personal Information</p>
-            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName} onChange={(e) => setUserName(e.target.value)} required/> : data.userName}</p>
+            <p><span className="font-bold">Name:</span> {userNameEdit ? <input type="text" name="username" id="username" value={userName} onChange={(e) => setUserName(e.target.value)} required/> : data.userName} 
+            {saveProfileLoading ? <span className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></span> : null }
+            </p>
           </div>
           <div className='ml-auto'>
             <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>

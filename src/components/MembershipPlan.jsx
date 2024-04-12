@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import basicPlanPic from "../img/basic-plan.jpg";
 import businessPlanPic from "../img/business-plan.jpg";
 import PremiumPlanPic from "../img/premium-plan.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { auth } from '../services/firebase';
 
 const plans = [
     {
@@ -40,7 +42,18 @@ const plans = [
     }
 ];
 
+
 const MemberShipCard = ({ memberPlan }) => {
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            setIsAuthenticated(!!user); // Convert user to boolean
+        });
+  
+        return () => unsubscribe(); // Unsubscribe when component unmounts
+    }, []);
 
     const backgroundStyles = {
         backgroundImage: `url(${memberPlan.image})`,
@@ -64,9 +77,11 @@ const MemberShipCard = ({ memberPlan }) => {
             </div>
             <div className="py-4 place-self-end w-40 mx-auto flex flex-col gap-2 justify-center items-center">
                 <span className="bg-[#2E7D32] dark:bg-[#ff6f00] text-white rounded-full px-3 py-1 text-sm font-semibold w-34 flex justify-center">{memberPlan.amount}/Month</span>
-                <button className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300">
-                    Choose Package
-                </button>
+                <Link to={isAuthenticated ? '/user-dashboard' : `/sign-up`}>
+                    <button className="border-double border-4 bg-transparent px-4 py-2 text-sm font-semibold rounded-full border-[#388E3C] hover:bg-[#388E3C] dark:border-[#ff6f00] dark:hover:bg-[#ff6f00] hover:text-white transition duration-300">
+                        {isAuthenticated ? 'User dashboard' : `Get Started`}
+                    </button>
+                </Link>
             </div>
         </div>
     );
