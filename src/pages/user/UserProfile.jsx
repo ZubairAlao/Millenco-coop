@@ -185,9 +185,9 @@ export default function UserProfile() {
             </p>
           </div>
           <div className='ml-auto'>
-            {userName.length > 5 && <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
+            <button className="border py-2 px-4 mr-3 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => {setUserNameEdit(!userNameEdit); if (userNameEdit) {saveProfile();}}}>
               {userNameEdit ? 'Save' : 'Edit'}
-            </button>}
+            </button>
             {userNameEdit ? 
               <button className="border py-2 px-4 rounded-md border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300" onClick={() => setUserNameEdit(!userNameEdit)}>
                 cancel

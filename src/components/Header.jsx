@@ -85,6 +85,25 @@ export default function Header() {
     };
   }, []);
 
+
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     // Check if the click event did not originate inside the navbar
+  //     if (navbarWrapperRef.current && !navbarWrapperRef.current.contains(event.target)) {
+  //       // Close the navbar
+  //       setIsMenuOpen(false);
+  //     }
+  //   };
+
+  //   // Add event listener to document
+  //   document.addEventListener('click', handleOutsideClick);
+
+  //   // Clean up the event listener when component unmounts
+  //   return () => {
+  //     document.removeEventListener('click', handleOutsideClick);
+  //   };
+  // }, []);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -102,10 +121,12 @@ export default function Header() {
 
   const toggleDropDown = () => {
     setIsDropDown(!isDropDown);
+    setIsMenuOpen(false);
   };
 
   const toggleProfile = () => {
     setIsProfile(!isProfile);
+    setIsMenuOpen(false);
   };
 
 
@@ -132,7 +153,6 @@ export default function Header() {
   return (
     <header className='fixed top-0 left-0 right-0 text-[#333333] bg-[#E8F5E9] dark:text-[#cccccc] dark:bg-[#1A1A1A] z-50 shadow-md'>
       <div className='flex max-w-screen-xl mx-auto items-center justify-between relative py-4 px-8' ref={navbarWrapperRef}>
-
           <button
             className="text-black dark:text-white hover:opacity-80 md:hidden"
             onClick={toggleMenu}
@@ -141,79 +161,79 @@ export default function Header() {
             <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} className="h-7 w-7" />
           </button>
 
-          <Link to='/' className='flex items-center'>
+          <Link to='/' className='flex items-center' onClick={() => {setIsMenuOpen(false);}}>
             <h1 className="logo-text text-3xl font-bold text-[#333333] dark:text-[#cccccc]">Millen<span className='text-[#388E3C] dark:text-[#FF6F00]'>co</span>.</h1>
           </Link>
 
           {/* desktop */}
           <nav className='hidden md:flex text-base'>
-          <ul className="flex gap-8">
-            {navLinks.map((link) => (
-              <li key={link.text}>
-                {link.children ? (
-                  <div className="relative flex gap-1 items-center">
-                    <div
-                      className={"hover:text-[#388E3C] dark:hover:text-[#FF6F00] duration-300 ease-in-out cursor-pointer"}
-                      to={link.url} onClick={toggleDropDown} ref={dropDownButtonRef}
+            <ul className="flex gap-8">
+              {navLinks.map((link) => (
+                <li key={link.text}>
+                  {link.children ? (
+                    <div className="relative flex gap-1 items-center">
+                      <div
+                        className={"hover:text-[#388E3C] dark:hover:text-[#FF6F00] duration-300 ease-in-out cursor-pointer"}
+                        to={link.url} onClick={toggleDropDown} ref={dropDownButtonRef}
+                      >
+                        {link.text}
+                      </div>
+                      <svg
+                        className="text-[#388E3C] dark:text-[#FF6F00] cursor-pointer"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        width="16"
+                        height="16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 12a1 1 0 01-.707-.293l-4-4a1 1 0 111.414-1.414L10 9.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-.707.293z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <ul className={`absolute left-0 dark:bg-[#1A1A1A] bg-[#E8F5E9] shadow-md p-4 w-36 transition rounded-md flex flex-col ring-1 ring-black dark:ring-[#FF6F00] ring-opacity-5 dark:ring-opacity-25 focus:outline-none space-y-2 ${isDropDown ? 'opacity-100 visible top-7' : 'opacity-0 invisible'}`} ref={dropDownWrapperRef}>
+                        {link.children.map(child => (
+                          <li key={child.text}>
+                            <NavLink
+                              className={({isActive}) => isActive ? "active" : 'hover:text-[#388E3C] dark:hover:text-[#FF6F00]'}
+                              to={child.url} onClick={toggleDropDown}
+                            >
+                              {child.text}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <NavLink
+                      className={({isActive}) => isActive ? "active" : "hover:text-[#388E3C] dark:hover:text-[#FF6F00] duration-300 ease-in-out"}
+                      to={link.url}
                     >
                       {link.text}
-                    </div>
-                    <svg
-                      className="text-[#388E3C] dark:text-[#FF6F00] cursor-pointer"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      width="16"
-                      height="16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 12a1 1 0 01-.707-.293l-4-4a1 1 0 111.414-1.414L10 9.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-.707.293z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <ul className={`absolute left-0 dark:bg-[#1A1A1A] bg-[#E8F5E9] shadow-md p-4 w-36 transition rounded-md flex flex-col ring-1 ring-black dark:ring-[#FF6F00] ring-opacity-5 dark:ring-opacity-25 focus:outline-none space-y-2 ${isDropDown ? 'opacity-100 visible top-7' : 'opacity-0 invisible'}`} ref={dropDownWrapperRef}>
-                      {link.children.map(child => (
-                        <li key={child.text}>
-                          <NavLink
-                            className={({isActive}) => isActive ? "active" : 'hover:text-[#388E3C] dark:hover:text-[#FF6F00]'}
-                            to={child.url} onClick={toggleDropDown}
-                          >
-                            {child.text}
-                          </NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <NavLink
-                    className={({isActive}) => isActive ? "active" : "hover:text-[#388E3C] dark:hover:text-[#FF6F00] duration-300 ease-in-out"}
-                    to={link.url}
-                  >
-                    {link.text}
-                  </NavLink>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+                    </NavLink>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* mobile */}
           <nav
             className={`
-              ${isMenuOpen ? 'md:hidden left-0 absolute w-[60%] h-full ease-in-out duration-500 top-[65px]'
+              ${isMenuOpen ? 'md:hidden left-0 absolute w-[60%] h-full ease-in-out duration-500 top-[65px] z-50'
                 : 'absolute ease-in-out duration-500 top-[65px] left-[-100%]'
               }
             `}
             >
             <ul className='bg-[#C8E6C9] dark:bg-[#37474F] p-4 text-base h-screen'>
               <li
-                className="bg-[#C8E6C9] dark:bg-[#37474F] hover:opacity-80 w-full text-left flex items-center py-4 justify-between cursor-pointer" onClick={switchMode}>
+                className="bg-[#C8E6C9] dark:bg-[#37474F] hover:opacity-80 w-full text-left flex items-center py-4 justify-between cursor-pointer" onClick={() => {switchMode(); toggleMenu()}}>
                 <span className='font-semibold'>Dark Mode</span>
                 <FontAwesomeIcon icon={darkMode ? faSun : faMoon} className="h-7 w-7 text-[#388E3C] dark:text-[#FF6F00]" />
               </li>
               {navLinks.map((link) => (
-                <li key={link.text} className='mb-4 block' onClick={toggleMenu}>
+                <li key={link.text} className='mb-4 block'>
                   {link.children ? (
                     <div>
                       <div className='mb-2'>
@@ -222,13 +242,13 @@ export default function Header() {
                       <ul className='border-l flex flex-col gap-2'>
                         {link.children.map(child => (
                           <li className='' key={child.url}>
-                            <NavLink to={child.url}  className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#FF6F00] transition duration-300 px-8 font-semibold" : 'px-8 hover:text-[#388E3C] dark:hover:text-[#FF6F00]'}>{child.text}</NavLink>
+                            <NavLink to={child.url}  className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#FF6F00] transition duration-300 px-8 font-semibold" : 'px-8 hover:text-[#388E3C] dark:hover:text-[#FF6F00]'} onClick={toggleMenu}>{child.text}</NavLink>
                           </li>
                         ))}
                       </ul>
                     </div>
                   ) : (
-                    <NavLink to={link.url}  className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#FF6F00] transition duration-300 font-semibold" : 'hover:text-[#388E3C] dark:hover:text-[#FF6F00]'}>{link.text}</NavLink>
+                    <NavLink to={link.url}  className={({isActive}) => isActive ? "text-[#388E3C] dark:text-[#FF6F00] transition duration-300 font-semibold" : 'hover:text-[#388E3C] dark:hover:text-[#FF6F00]'} onClick={toggleMenu}>{link.text}</NavLink>
                   )}
                 </li>
               ))}
@@ -247,7 +267,7 @@ export default function Header() {
           {isAuthenticated ?
             <div className='relative flex items-center gap-4'>
               <Link to='/user-dashboard/user-transactions'
-                className="text-black dark:text-white hover:opacity-80 flex place-content-center"
+                className="text-black dark:text-white hover:opacity-80 flex place-content-center" onClick={() => {setIsMenuOpen(false);}}
               >
                 <FontAwesomeIcon icon={faBell} className="h-7 w-7" />
               </Link>
