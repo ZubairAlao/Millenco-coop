@@ -53,6 +53,9 @@ export default function LoanApplicationPage() {
   const timeDifferenceMs = currentTimeMs - registrationTimeMs;
   const monthsUsed = Math.floor(timeDifferenceMs / (1000 * 60 * 60 * 24 * 30));
   console.log(monthsUsed);
+
+  const loanRepayPerMonth = (parseInt(loanValue) * 6 * 3) / 100;
+  const loanValuePlusInterest = loanRepayPerMonth * 6;
   
   const loanDataObject = {
     userName: data.userName,
@@ -68,7 +71,9 @@ export default function LoanApplicationPage() {
     ref: crypto.randomUUID(),
     paymentDate: new Date().toISOString(),
     loanValue: parseInt(loanValue),
-    loanRepayPerMonth: (loanValue * 6 * 3) / 100
+    loanRepayPerMonth: (loanValue * 6 * 3) / 100,
+    loanValuePlusInterest: loanValuePlusInterest,
+
   };
 
   console.log(loanDataObject);
@@ -139,8 +144,8 @@ export default function LoanApplicationPage() {
                           <div className='flex flex-1 space-x-4 items-center'>
                               <p className="text-green-500">Your account: ₦{data.accountBalance.toLocaleString()}</p>
                               <p className="text-blue-500">Maximum Loan: ₦{loanDataObject.maxLoanAmount.toLocaleString()}</p>
-                              <p className="text-red-500">Total Loan Requested: ₦{parseInt(loanValue).toLocaleString()}</p>
-                              <p className="text-purple-500">Repay/Month: ₦{parseInt(loanDataObject.loanRepayPerMonth).toLocaleString()}</p>
+                              <p className="text-red-500">Loan Requested: ₦{parseInt(loanValue).toLocaleString()}</p>
+                              <p className="text-red-500">Loan with Interest: ₦{(loanDataObject.loanRepayPerMonth * 6).toLocaleString()}</p>
                           </div>
                           <div>
                               <label htmlFor="loan-amount">
@@ -150,6 +155,9 @@ export default function LoanApplicationPage() {
                               </label>
                               <input type="number" name="loan-amount" id="loan-amount" min="0" max={loanDataObject.maxLoanAmount} onChange={(e) => setLoanValue(e.target.value)} required />
                               <input type="range" className='w-full' min="0" max={loanDataObject.maxLoanAmount} value={loanValue} readOnly />
+                          </div>
+                          <div className='flex flex-1 space-x-4 items-center'>
+                              <p className="text-purple-500 mx-auto">Repay/Month: ₦{parseInt(loanDataObject.loanRepayPerMonth).toLocaleString()}</p>
                           </div>
                       </fieldset>
 

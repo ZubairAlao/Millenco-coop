@@ -48,7 +48,7 @@ export const LoanSuccessPage = () => {
           <p className="text-sm"><strong>Email:</strong> {data.email}</p>
           <p className="text-sm"><strong>Payment Date:</strong> {new Date(data.paymentDate).toLocaleString()}</p>
           <p className="text-sm"><strong>Loan Repay per Month:</strong> ₦{data.loanRepayPerMonth && data.loanRepayPerMonth.toLocaleString()}</p>
-          <p className="text-sm"><strong>Loan Request Granted:</strong> ₦{data.loanValue && data.loanValue.toLocaleString()}</p>
+          <p className="text-sm"><strong>Loan Request Granted:</strong> ₦{data.loanValuePlusInterest && data.loanValuePlusInterest.toLocaleString()}</p>
         </div>
         <Link to="/user-dashboard" className="block mt-6 text-sm text-blue-600 hover:underline">Go to Dashboard</Link>
       </div>

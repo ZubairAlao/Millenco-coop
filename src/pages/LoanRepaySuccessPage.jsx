@@ -10,7 +10,7 @@ export const LoanRepaySuccessPage = () => {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
     queryFn: async () => {
-      const userId = auth.currentUser.uid;
+      const userId = auth.currentUser?.uid;
       const profileData = await getProfileData(userId);
       return profileData.loanRepayHistory[profileData.loanRepayHistory.length - 1];
     }

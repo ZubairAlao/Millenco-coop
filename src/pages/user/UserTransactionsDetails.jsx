@@ -83,7 +83,7 @@ export default function UserTransactionsDetails() {
                 <p className="text-sm"><strong>Email:</strong> {transaction.email}</p>
                 <p className="text-sm"><strong>Payment Date:</strong> {new Date(transaction.paymentDate).toLocaleString()}</p>
                 <p className="text-sm"><strong>Loan Repay per Month:</strong> ₦{transaction.loanRepayPerMonth && transaction.loanRepayPerMonth.toLocaleString()}</p>
-                <p className="text-sm"><strong>Loan Request Granted:</strong> ₦{transaction.loanValue && transaction.loanValue.toLocaleString()}</p>
+                <p className="text-sm"><strong>Loan Request Granted:</strong> ₦{transaction.loanValuePlusInterest && transaction.loanValuePlusInterest.toLocaleString()}</p>
               </div>
             </div>
           ))
