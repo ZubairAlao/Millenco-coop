@@ -10,21 +10,33 @@ import { useNavigate } from 'react-router-dom'
 export default function LoanApplicationPage() {
 
   const navigate =  useNavigate();
-
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['profileData'],
-    queryFn: async () => {
-      const userId = auth.currentUser.uid;
-      const profileData = await getProfileData(userId);
-      return profileData;
-    }
-  })
+  const queryClient = useQueryClient()
 
   const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loanApplicationError, setLoanApplicationError] = useState(null);
   const [loanValue, setLoanValue] = useState(0)
-  const queryClient = useQueryClient()
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['profileData'],
+    queryFn: async () => {
+      const userId = auth.currentUser.uid;
+      return await getProfileData(userId);
+    }
+  })
+
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-900  dark:border-gray-100"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
+
   const makeUserOldMember = async (e) => {
     e.preventDefault();
     setIsOldMemberLoading(true);
@@ -102,18 +114,6 @@ export default function LoanApplicationPage() {
     finally{
       setIsLoading(false);
     }
-  }
-
-   if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-900  dark:border-gray-100"></div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return <span>Error: {error.message}</span>
   }
 
   return (

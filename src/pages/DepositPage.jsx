@@ -10,6 +10,11 @@ import { Link } from 'react-router-dom'
 
 export default function DepositPage() {
 
+  const queryClient = useQueryClient()
+  const [tab, setTab] = useState('deposit');
+  const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
+  
+
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['profileData'],
     queryFn: async () => {
@@ -31,7 +36,6 @@ export default function DepositPage() {
     return <span>Error: {error.message}</span>
   }
 
-  const [tab, setTab] = useState('deposit');
   const depositDataObject = {
     userName: data.userName,
     email: data.email,
@@ -54,8 +58,6 @@ export default function DepositPage() {
     plan: data.plan
   };
   
-  const [isOldMemberLoading, setIsOldMemberLoading] = useState(false);
-  const queryClient = useQueryClient()
   const makeUserOldMember = async (e) => {
     e.preventDefault();
     setIsOldMemberLoading(true);
